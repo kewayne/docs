@@ -1,0 +1,102 @@
+---
+title: 'Courier Partners: Branding, AWB, and Credentials'
+sidebarTitle: 'Couriers'
+description: 'Learn how to onboard courier partners in Shiipp Warehouse, configure AWB sequences, set custom branding, and manage API credentials for integrations.'
+---
+
+Courier partners are the logistics carriers your organization works with to move freight from your warehouse to the final destination. In Shiipp Warehouse, each courier is a first-class entity with its own identity, AWB numbering rules, visual branding, and API credentials. Modeling couriers this way means every package, manifest, and invoice in your workspace carries accurate, carrier-specific information without any manual disambiguation.
+
+## What Is a Courier Partner
+
+A **courier partner** is a logistics company that has been integrated into your Shiipp Warehouse workspace. Once onboarded, a courier can be:
+
+- Assigned to individual packages as the responsible carrier
+- Used as the basis for AWB number generation on flight manifests
+- Displayed with its own logo, name, and brand color on tracking pages and invoices
+- Connected to external systems via API keys and webhook credentials
+
+Each organization manages its own roster of courier partners in isolation. Courier configurations — including AWB sequences and credentials — are never shared between workspaces.
+
+## AWB Number Sequences
+
+An **Air Waybill (AWB)** number is the primary reference document for air cargo shipments. Shiipp Warehouse supports two levels of AWB numbering:
+
+<Accordion title="Master AWB (MAWB)">
+  A **Master AWB** is issued by the airline or consolidator and covers the entire shipment from origin to destination airport. In Shiipp Warehouse, the MAWB is attached at the **manifest level** — one manifest has one Master AWB. The MAWB prefix identifies the operating airline.
+</Accordion>
+
+<Accordion title="House AWB (HAWB)">
+  A **House AWB** is issued by the freight forwarder (you) to individual shippers and covers a specific shipment within the consolidated load. HAWBs are tracked at the **package level**. Each courier partner in Shiipp Warehouse can be configured with its own HAWB prefix and an auto-incrementing sequence number.
+</Accordion>
+
+AWB numbers follow a standard format: a **3-digit airline prefix** followed by a **8-digit serial number** (e.g., `106-12345678`). Shiipp Warehouse auto-increments the serial number each time a new AWB is generated for a courier, eliminating the risk of duplicate issuance.
+
+### Common AWB Prefixes
+
+The platform uses the AWB prefix on a manifest's Master AWB to automatically identify the operating airline:
+
+| Prefix | Airline |
+|--------|---------|
+| 106 | Caribbean Airlines |
+| 810 | AmeriJet |
+| 175 | IBC Airways |
+
+<Info>
+  If your operation uses a carrier not listed here, you can configure a custom prefix when onboarding the courier partner. The platform will store and display the carrier name you provide.
+</Info>
+
+## Custom Branding
+
+Each courier partner can be configured with its own visual identity. These branding elements appear throughout the platform and on customer-facing documents:
+
+| Branding Element | Where It Appears |
+|-----------------|-----------------|
+| **Logo** | Tracking portal header, printed manifest cover page, invoice letterhead |
+| **Hex Brand Color** | Package badges in the data explorer, manifest summary cards, tracking portal accent color |
+| **Display Name** | Package list courier column, manifest title, invoice line items |
+
+To update a courier's branding, navigate to **Settings → Courier Partners**, select the courier, and update the fields under the **Branding** tab. Changes take effect immediately across all views — no cache flush or redeploy required.
+
+<Tip>
+  Use a hex color with sufficient contrast against white backgrounds (aim for a contrast ratio of at least 4.5:1) so that courier badges remain readable for all team members, including those with color vision differences.
+</Tip>
+
+## IAM Credentials
+
+When you onboard a new courier partner, Shiipp Warehouse automatically provisions a set of identity and access management (IAM) credentials scoped specifically to that courier. These credentials allow external systems — such as a courier's own warehouse software or a third-party integration — to interact with your workspace on behalf of that carrier without requiring full admin access.
+
+Provisioned credentials include:
+
+- **X-API-KEY** — An API key for authenticating REST API requests
+- **Webhook Secret** — A signing secret used to verify that inbound webhook payloads originate from the expected courier system
+- **Courier ID** — A stable, unique identifier for the courier that external systems can reference in API calls
+
+<Note>
+  IAM credentials are scoped to the courier partner, not to an individual user account. This means that rotating a courier's API key does not affect any user's login or personal access tokens.
+</Note>
+
+## API Key Management
+
+You can generate, view, and rotate API keys for each courier partner from **Settings → Courier Partners → [Courier Name] → Credentials**.
+
+<Steps>
+  <Step title="Generate a Key">
+    Click **Generate New Key**. The platform creates a new `X-API-KEY` token and displays it once in full. Copy it immediately — the full key is not shown again after you navigate away.
+  </Step>
+  <Step title="Use the Key">
+    Include the key in the `X-API-KEY` header of every API request made on behalf of this courier:
+
+    ```http
+    GET /api/v1/packages HTTP/1.1
+    Host: api.shiipp.com
+    X-API-KEY: sk_courier_xxxxxxxxxxxxxxxxxxxx
+    ```
+  </Step>
+  <Step title="Rotate the Key">
+    If a key is compromised or you want to enforce regular rotation, click **Rotate Key**. The old key is immediately invalidated and a new one is issued. Update any downstream integrations before rotating to avoid service interruption.
+  </Step>
+</Steps>
+
+<Warning>
+  It is strongly recommended to use **one API key per integration**. Avoid sharing a single key across multiple systems — this makes it impossible to isolate a breach and rotate credentials without disrupting unaffected integrations.
+</Warning>

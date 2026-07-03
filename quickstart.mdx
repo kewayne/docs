@@ -1,47 +1,77 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: 'Get Started with Shiipp Warehouse in 5 Minutes'
+sidebarTitle: 'Quickstart'
+description: 'Follow these five steps to log in, set up your company profile, add a courier partner, and receive your first package in Shiipp Warehouse.'
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+This guide walks you through everything you need to go from a blank workspace to your first tracked package. By the end, you'll have a courier partner configured, a package on record, and a live tracking link ready to share with your customer.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+<Tip>
+  Enable two-factor authentication (2FA) the first time you log in. Shiipp Warehouse supports any TOTP-compatible authenticator app (Google Authenticator, Authy, 1Password). Once enabled, your account requires a 6-digit code at every login — protecting your tenant data and all packages within it.
+</Tip>
 
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+## Steps
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Log in to your account">
+    Open your Shiipp Warehouse URL and enter your **email address** and **password**. If your administrator has enforced 2FA (recommended), you'll be prompted for a 6-digit code from your authenticator app immediately after your password is accepted.
 
-    ```bash
-    npm install your-package
     ```
+    Email:    you@yourcompany.com
+    Password: ••••••••••••
+    2FA Code: 482 917
+    ```
+
+    After a successful login, you land on the main dashboard for your company workspace.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
 
-    ```bash
-    your-cli init
-    ```
+  <Step title="Complete your company profile">
+    Navigate to **Settings → Company Profile** and fill in your organisation's details:
+
+    - **Company name** — displayed on invoices and the customer tracking portal.
+    - **Logo** — upload a PNG or SVG (recommended: 200 × 60 px) for white-label branding.
+    - **Default currency and timezone** — used across billing, reports, and package timestamps.
+    - **Contact email** — shown to customers on tracking pages and invoice footers.
+
+    Save your changes. These settings apply globally to your tenant workspace.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
 
-    ```bash
-    your-cli start
+  <Step title="Add your first courier partner">
+    Go to **Couriers → New Courier** and complete the courier creation form:
+
+    | Field | Description |
+    |---|---|
+    | **Name** | The courier's display name (e.g., "FastShip Express") |
+    | **Prefix** | A short code prepended to package tracking numbers (e.g., `FSE`) |
+    | **Logo / Branding** | Upload the courier's logo for their portal and tracking pages |
+    | **Contact details** | Email and phone number for operational queries |
+
+    Click **Save Courier**. The courier now appears in your courier list and is ready to receive packages and API keys.
+  </Step>
+
+  <Step title="Receive your first package">
+    Go to **Packages → New Package** and enter the shipment details:
+
+    - **Tracking number** — assigned by you or auto-generated with the courier prefix (e.g., `FSE-00001`).
+    - **Weight** — in kilograms; used for billing calculations.
+    - **Customer name and contact** — the recipient's details, shown on their tracking page.
+    - **Courier** — select the partner you just created.
+    - **Status** — set to `Received` to mark the package as in your warehouse.
+
+    Click **Save Package**. The package is now live in your system with a full audit trail.
+  </Step>
+
+  <Step title="Share the tracking link with your customer">
+    Every package gets a public tracking URL the moment it's created. Find the package in your dashboard, open its detail view, and copy the tracking link:
+
     ```
+    https://yourapp.com/track/{tracking_number}
+    ```
+
+    Share this link with your customer via email, SMS, or your customer portal. The page updates automatically whenever the package status changes — no login required for the recipient.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
-
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+<Note>
+  This quickstart covers dashboard usage only. For API-based package creation, courier integration, and webhook configuration, see the [Authentication](/authentication) page to generate your first API key.
+</Note>

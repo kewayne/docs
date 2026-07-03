@@ -1,0 +1,85 @@
+---
+title: 'Sync Invoices with Invoice Ninja Accounting'
+sidebarTitle: 'Invoice Ninja'
+description: 'Connect Shiipp Warehouse to Invoice Ninja to automatically push published invoices, line items, and client details to your accounting platform.'
+---
+
+The Invoice Ninja integration bridges your warehouse billing workflow with your accounting system. When you publish an invoice inside Shiipp Warehouse, the platform automatically pushes it to Invoice Ninja — complete with line items, package fees, surcharges, and client details — so your books stay current without any manual data entry.
+
+## What This Integration Does
+
+<CardGroup cols={2}>
+  <Card title="Automatic Invoice Push" icon="file-invoice">
+    Every invoice you publish in Shiipp Warehouse is instantly created in Invoice Ninja as a new invoice with matching totals and line items.
+  </Card>
+  <Card title="Client Matching" icon="user-check">
+    Clients are matched by company name across both platforms. If no match exists, Invoice Ninja creates a new client record automatically.
+  </Card>
+  <Card title="Line Item Mapping" icon="list">
+    Package fees, handling charges, and surcharges map directly to Invoice Ninja line items, preserving your fee structure in the accounting record.
+  </Card>
+  <Card title="Payment Status Sync" icon="circle-check">
+    When a payment is recorded in Invoice Ninja, the **Paid** status syncs back to Shiipp Warehouse so your invoice list stays accurate.
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+Before connecting the integration, make sure you have the following:
+
+- An active **Invoice Ninja** account (self-hosted or cloud)
+- An **API token** generated from your Invoice Ninja account settings (**Settings → API Tokens → New Token**)
+- Administrator access in Shiipp Warehouse to reach **Settings → Integrations**
+
+## Connecting Invoice Ninja
+
+<Steps>
+  <Step title="Open the Integration Settings">
+    In Shiipp Warehouse, navigate to **Settings → Integrations → Invoice Ninja**.
+  </Step>
+  <Step title="Enter Your Invoice Ninja API URL">
+    Type your Invoice Ninja base URL into the **API URL** field. For cloud accounts, this is typically `https://app.invoiceninja.com`. For self-hosted installs, use your own domain (e.g., `https://invoices.yourcompany.com`).
+  </Step>
+  <Step title="Paste Your API Token">
+    Paste the API token you generated in Invoice Ninja into the **API Token** field.
+  </Step>
+  <Step title="Test the Connection">
+    Click **Test Connection**. Shiipp Warehouse will make a verification call to Invoice Ninja and confirm the credentials are valid. Resolve any errors before proceeding.
+  </Step>
+  <Step title="Save">
+    Click **Save**. The integration is now active and will process all subsequent published invoices automatically.
+  </Step>
+</Steps>
+
+## How Sync Works
+
+When you click **Publish** on an invoice in Shiipp Warehouse, the platform immediately sends the invoice data to Invoice Ninja via the API. The sync includes:
+
+- **Client details** — matched to an existing Invoice Ninja client by company name, or created as a new client if no match is found
+- **Line items** — each package fee, handling charge, and surcharge becomes a separate line item in Invoice Ninja
+- **Totals** — subtotals, tax amounts, and grand totals are preserved exactly as they appear in Shiipp Warehouse
+- **Invoice number** — the Shiipp Warehouse invoice number is carried over so both systems reference the same document
+
+<Note>
+  Clients in Invoice Ninja are matched by **company name**. Ensure names are consistent across both systems — even small differences like `"Acme Corp"` vs `"Acme Corporation"` will cause a new client record to be created in Invoice Ninja instead of matching the existing one.
+</Note>
+
+## Manual Sync
+
+If automatic sync fails (for example, due to a temporary network issue or an Invoice Ninja downtime), you can trigger a manual sync directly from the invoice detail page.
+
+<Steps>
+  <Step title="Open the Invoice">
+    Go to **Invoices** and click the invoice you want to sync.
+  </Step>
+  <Step title="Trigger Manual Sync">
+    On the invoice detail page, click the **Sync to Invoice Ninja** button in the actions menu.
+  </Step>
+  <Step title="Confirm Success">
+    A confirmation banner appears when the sync completes. If the sync fails again, check your API token and Invoice Ninja connectivity, then retry.
+  </Step>
+</Steps>
+
+<Tip>
+  Use Invoice Ninja's built-in **payment portal** to collect payments from courier partners and clients. Once a payment is recorded there, Shiipp Warehouse will automatically reflect the **Paid** status on the corresponding invoice during the next sync — no manual status updates needed.
+</Tip>

@@ -1,0 +1,132 @@
+---
+title: 'POST /api/packages — Create a Package Record'
+sidebarTitle: 'Create Package'
+description: 'Log a new package into the Shiipp warehouse system. Provide tracking details, courier assignment, and weight to create a record.'
+---
+
+Use this endpoint to register a new package in your warehouse. You must supply a carrier tracking number, a valid courier partner ID, and the recipient's name. Weight is optional but strongly recommended — you may provide it in either pounds or kilograms, and Shiipp will automatically calculate and store the converted value. Newly created packages are assigned a `pending` status.
+
+## Request
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Shiipp API key. Pass this in the request header to authenticate.
+</ParamField>
+
+**Method:** `POST`  
+**URL:** `/api/packages`  
+**Content-Type:** `application/json`
+
+### Body Parameters
+
+<ParamField body="tracking" type="string" required>
+  The carrier-assigned tracking number for this package. Must be unique within your account.
+</ParamField>
+
+<ParamField body="courier_id" type="string" required>
+  The ID of the courier partner responsible for this shipment. Use `GET /api/couriers` to look up valid IDs.
+</ParamField>
+
+<ParamField body="customer_name" type="string" required>
+  Full name of the package recipient.
+</ParamField>
+
+<ParamField body="weight_lbs" type="number">
+  Package weight in pounds. Either `weight_lbs` or `weight_kg` must be provided — both are accepted.
+</ParamField>
+
+<ParamField body="weight_kg" type="number">
+  Package weight in kilograms. Either `weight_kg` or `weight_lbs` must be provided — both are accepted.
+</ParamField>
+
+<ParamField body="shipper" type="string">
+  Name of the shipper or vendor who sent the package (e.g. `Amazon`, `FedEx Vendor`).
+</ParamField>
+
+<ParamField body="description" type="string">
+  A short description of the package contents (e.g. `Electronics`, `Clothing`).
+</ParamField>
+
+### Example Request
+
+<CodeGroup>
+```bash cURL
+curl --request POST \
+  --url "https://api.shiipp.com/api/packages" \
+  --header "X-API-KEY: your_api_key_here" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "tracking": "1Z999AA10123456784",
+    "courier_id": "cou_01HZ",
+    "customer_name": "Jane Smith",
+    "weight_lbs": 12.5,
+    "shipper": "Amazon",
+    "description": "Electronics"
+  }'
+```
+
+```json Request Body
+{
+  "tracking": "1Z999AA10123456784",
+  "courier_id": "cou_01HZ",
+  "customer_name": "Jane Smith",
+  "weight_lbs": 12.5,
+  "shipper": "Amazon",
+  "description": "Electronics"
+}
+```
+</CodeGroup>
+
+## Response
+
+A successful request returns HTTP `201 Created` along with the full package object.
+
+<ResponseField name="success" type="boolean">
+  `true` when the package record was created successfully.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The newly created package object.
+
+  <Expandable title="Package object fields">
+    <ResponseField name="id" type="string">
+      System-generated unique identifier for the package.
+    </ResponseField>
+    <ResponseField name="tracking" type="string">
+      The carrier tracking number you submitted.
+    </ResponseField>
+    <ResponseField name="customer_name" type="string">
+      The recipient name as provided.
+    </ResponseField>
+    <ResponseField name="weight_lbs" type="number">
+      Weight in pounds — auto-converted if you submitted `weight_kg`.
+    </ResponseField>
+    <ResponseField name="weight_kg" type="number">
+      Weight in kilograms — auto-converted if you submitted `weight_lbs`.
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      Always `pending` for newly created packages.
+    </ResponseField>
+    <ResponseField name="created_at" type="string">
+      ISO 8601 timestamp of when the record was created.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+```json Example Response (201 Created)
+{
+  "success": true,
+  "data": {
+    "id": "pkg_01HZ3K5MNPQR2STV",
+    "tracking": "1Z999AA10123456784",
+    "customer_name": "Jane Smith",
+    "weight_lbs": 12.5,
+    "weight_kg": 5.67,
+    "status": "pending",
+    "created_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+<Note>
+  You only need to provide one weight field — Shiipp automatically converts between `weight_lbs` and `weight_kg` and stores both values. If you provide both, the values must be consistent; a mismatch will return a `422` validation error.
+</Note>

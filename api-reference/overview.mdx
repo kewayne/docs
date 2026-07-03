@@ -1,0 +1,169 @@
+---
+title: 'Shiipp Warehouse REST API Reference Overview'
+sidebarTitle: 'Overview'
+description: 'Explore the Shiipp Warehouse REST API to integrate package management, tracking, and courier operations into your own systems.'
+---
+
+Shiipp Warehouse exposes a REST API that lets you integrate package management, tracking, and courier operations into your own systems. Whether you're building a custom dashboard, automating shipment workflows, or syncing data with a third-party platform, every capability available in the Shiipp interface is accessible programmatically through this API.
+
+---
+
+## Base URL
+
+All API requests are made to the following base URL:
+
+```
+https://yourapp.com/api
+```
+
+<Info>
+  Replace `yourapp.com` with your actual Shiipp Warehouse domain. All endpoints described in this reference are appended to this base URL.
+</Info>
+
+---
+
+## Authentication
+
+Every request to the Shiipp Warehouse API must include a valid API key passed via the `X-API-KEY` request header. Requests without a valid key will be rejected with a `401 Unauthorized` response.
+
+See the [Authentication guide](/api-reference/authentication) for full details on obtaining and using your API key.
+
+---
+
+## Request Format
+
+<Note>
+  All request and response bodies use JSON. Make sure you set the `Content-Type: application/json` header on requests that include a body.
+</Note>
+
+- **POST / PUT requests** — send parameters as a JSON body in the request payload.
+- **GET requests** — send filters and pagination options as URL query parameters.
+
+```bash
+# Example GET with query parameters
+curl "https://yourapp.com/api/packages?status=pending&page=2" \
+  -H 'X-API-KEY: sk_live_your_key_here'
+
+# Example POST with a JSON body
+curl -X POST https://yourapp.com/api/packages \
+  -H 'X-API-KEY: sk_live_your_key_here' \
+  -H 'Content-Type: application/json' \
+  -d '{"tracking_number": "SHP123456", "courier_id": "c_abc"}'
+```
+
+---
+
+## Response Format
+
+All responses from the API are returned as JSON objects. A successful response always includes a `success: true` field, a `data` payload, and a `meta` object containing pagination details where applicable.
+
+```json
+{
+  "success": true,
+  "data": { "..." },
+  "meta": {
+    "total": 150,
+    "page": 1,
+    "per_page": 25
+  }
+}
+```
+
+<ResponseField name="success" type="boolean">
+  `true` when the request was processed without errors.
+</ResponseField>
+
+<ResponseField name="data" type="object | array">
+  The primary payload returned by the endpoint — a single resource object or an array of objects.
+</ResponseField>
+
+<ResponseField name="meta" type="object">
+  Pagination metadata included on list endpoints.
+
+  <Expandable title="meta fields">
+    <ResponseField name="meta.total" type="integer">
+      Total number of records matching the query.
+    </ResponseField>
+    <ResponseField name="meta.page" type="integer">
+      The current page number.
+    </ResponseField>
+    <ResponseField name="meta.per_page" type="integer">
+      Number of records returned per page.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## Error Format
+
+When a request fails, the API returns `success: false` along with an `error` object that describes what went wrong.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid or missing API key"
+  }
+}
+```
+
+<ResponseField name="success" type="boolean">
+  `false` whenever an error has occurred.
+</ResponseField>
+
+<ResponseField name="error.code" type="string">
+  A machine-readable error code you can use to handle errors programmatically (e.g., `UNAUTHORIZED`, `NOT_FOUND`, `VALIDATION_ERROR`).
+</ResponseField>
+
+<ResponseField name="error.message" type="string">
+  A human-readable description of the error, suitable for logging or display.
+</ResponseField>
+
+---
+
+## HTTP Status Codes
+
+The API uses standard HTTP status codes to indicate the outcome of each request.
+
+| Code | Meaning |
+|------|---------|
+| `200` | **Success** — the request completed successfully. |
+| `201` | **Created** — a new resource was successfully created. |
+| `400` | **Bad Request** — missing or invalid parameters. |
+| `401` | **Unauthorized** — invalid or missing API key. |
+| `403` | **Forbidden** — insufficient permissions for the requested resource. |
+| `404` | **Not Found** — the requested resource does not exist. |
+| `422` | **Unprocessable Entity** — the request was well-formed but failed validation. |
+| `500` | **Internal Server Error** — an unexpected error occurred on the server. |
+
+---
+
+## Rate Limiting
+
+To ensure fair usage across all integrations, the Shiipp Warehouse API enforces a rate limit of **1,000 requests per hour per API key**. Every response includes the following headers so you can monitor your usage:
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Remaining` | Number of requests remaining in the current one-hour window. |
+| `X-RateLimit-Reset` | Unix timestamp indicating when your rate limit window resets. |
+
+<Warning>
+  If you exceed the rate limit, the API returns a `429 Too Many Requests` response. Build retry logic with exponential backoff into your integration to handle this gracefully.
+</Warning>
+
+---
+
+## Explore the API
+
+Browse the endpoint groups below to start building your integration.
+
+<CardGroup cols={2}>
+  <Card title="Packages" icon="box" href="/api-reference/packages/list">
+    List, create, update, and track packages across all your courier accounts.
+  </Card>
+  <Card title="Couriers" icon="truck" href="/api-reference/couriers/list">
+    Manage courier profiles, settings, and associated API credentials.
+  </Card>
+</CardGroup>

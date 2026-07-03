@@ -1,0 +1,107 @@
+---
+title: 'Packages: Tracking, Weight, and Lifecycle States'
+sidebarTitle: 'Packages'
+description: 'Everything you need to know about package records — fields, weight conversion, lifecycle states, inline editing, and data export in Shiipp Warehouse.'
+---
+
+Packages are the atomic unit of the Shiipp Warehouse platform. Every parcel that passes through your warehouse becomes a package record, carrying all the information needed to track its journey, assign it to a courier, group it into a manifest, and ultimately bill the customer. This page covers the full package data model, the states a package moves through, and the tools available for managing package data at scale.
+
+## Package Fields
+
+Each package record contains the following key fields:
+
+| Field | Description |
+|-------|-------------|
+| **Tracking Number** | A unique identifier for the package, used on the public tracking portal and printed labels. Must be unique within your organization. |
+| **Weight (LBS)** | The package weight in pounds. Entering this value automatically populates the KG field. |
+| **Weight (KG)** | The package weight in kilograms. Entering this value automatically populates the LBS field. |
+| **Shipper / Vendor** | The name of the business or individual who sent the package into your warehouse. |
+| **Description** | A plain-text description of the package contents, used on manifests and customs documents. |
+| **Customer Name** | The end recipient of the package. Appears on tracking pages and invoices. |
+| **Courier Assignment** | The courier partner responsible for onward delivery. Drives the color-coded badge and determines which manifest the package can be added to. |
+| **Status** | The current lifecycle state of the package. See the [Package Lifecycle](#package-lifecycle) section below. |
+
+## Package Lifecycle
+
+A package moves through a defined set of states as it progresses from intake to final delivery. Each state is displayed as a colored badge in the data explorer and on the public tracking portal.
+
+| State | Color | Description |
+|-------|-------|-------------|
+| **Pending** | Gray | The package has been logged but has not yet been assigned to a courier or added to a manifest. |
+| **In Transit** | Blue | The package has been assigned to a manifest and is en route to its destination. |
+| **Arrived** | Yellow | The package has landed at the destination hub and is awaiting customs clearance or local delivery. |
+| **Delivered** | Green | The package has been successfully delivered to the end customer. |
+| **Exception** | Red | An issue has been flagged — e.g., missing weight, customs hold, or courier rejection. Requires manual review. |
+
+<Tip>
+  Customers can self-serve their package status at any time using the public tracking portal. Share the direct URL using the format:
+
+  ```
+  https://your-domain.com/track/{tracking_number}
+  ```
+
+  Replace `{tracking_number}` with the package's assigned tracking number. No login is required for the public portal.
+</Tip>
+
+## Dual Weight System
+
+Shiipp Warehouse stores package weight in **both pounds (LBS) and kilograms (KG)** simultaneously. When you enter a value in either field, the platform automatically calculates and persists the converted value in the other field using the standard conversion factor (1 LBS = 0.453592 KG).
+
+Both values are stored — not derived at query time — for two important reasons:
+
+1. **Performance** — Manifest weight aggregations run directly against stored numeric fields without on-the-fly conversion overhead.
+2. **Accuracy** — Different courier partners and customs agencies require different units. Storing both avoids rounding errors introduced by repeated back-and-forth conversion.
+
+<Info>
+  If you import packages via CSV or API and supply only one weight unit, the platform automatically calculates and stores the other. You never need to pre-convert values before uploading.
+</Info>
+
+## Dynamic Courier Badges
+
+Every package displays a color-coded badge that reflects its assigned courier partner. These badges are generated automatically based on the courier's configured **brand color** — no manual badge configuration is required.
+
+When a courier partner is created or updated with a hex brand color, every package assigned to that courier instantly reflects the new color across the data explorer, manifest views, and the public tracking portal. This makes it visually easy to scan a list of packages and identify which carrier is handling each one at a glance.
+
+## Inline Editing
+
+You can edit package fields directly in the data explorer without navigating to a separate detail page. Click any editable cell — such as **Customer Name**, **Description**, **Weight**, or **Status** — and the field becomes an interactive input. Changes are saved immediately on blur or on pressing `Enter`, with no page reload required.
+
+<Warning>
+  Inline edits are applied immediately and are reflected in real time across all views, including active manifest groupings and the public tracking portal. Review your changes carefully before clicking away, as there is no draft state for inline edits.
+</Warning>
+
+## Export
+
+You can export any filtered view of package data in three formats:
+
+<Tabs>
+  <Tab title="CSV">
+    Export a comma-separated file compatible with Excel, Google Sheets, and most data tools. All currently visible columns and active filters are respected — only the packages shown in your current view are included in the export.
+
+    ```
+    tracking_number,weight_lbs,weight_kg,shipper,description,customer_name,courier,status
+    PKG-001,12.5,5.67,Acme Corp,Electronics,Jane Doe,AmeriJet,In Transit
+    ```
+  </Tab>
+  <Tab title="XLSX">
+    Export a native Excel workbook with column headers and formatted cells. Ideal for sharing reports with clients or internal teams who work primarily in spreadsheet tools.
+  </Tab>
+  <Tab title="JSON">
+    Export a structured JSON array of package objects. Useful for programmatic processing, migrating data to external systems, or feeding into custom reporting pipelines.
+
+    ```json
+    [
+      {
+        "tracking_number": "PKG-001",
+        "weight_lbs": 12.5,
+        "weight_kg": 5.67,
+        "shipper": "Acme Corp",
+        "description": "Electronics",
+        "customer_name": "Jane Doe",
+        "courier": "AmeriJet",
+        "status": "In Transit"
+      }
+    ]
+    ```
+  </Tab>
+</Tabs>

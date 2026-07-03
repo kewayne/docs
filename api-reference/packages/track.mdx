@@ -1,0 +1,112 @@
+---
+title: 'GET /api/track/{tracking_number} — Public Tracking'
+sidebarTitle: 'Track Package'
+description: 'Look up real-time package status and milestone history using a tracking number. No API key required — designed for customer self-service.'
+---
+
+This endpoint is public — no API key is required — and powers the customer-facing tracking portal embedded in your Shiipp workspace. Anyone with a valid tracking number can call this endpoint to retrieve the current status of their shipment along with a full milestone timeline. You can also integrate it directly into your own customer portal or mobile app.
+
+## Request
+
+**Method:** `GET`  
+**URL:** `/api/track/{tracking_number}`  
+**Authentication:** None required
+
+### Path Parameter
+
+<ParamField path="tracking_number" type="string" required>
+  The carrier-assigned tracking number to look up (e.g. `1Z999AA10123456784`). Must be an exact match.
+</ParamField>
+
+### Example Request
+
+<CodeGroup>
+```bash cURL
+curl --request GET \
+  --url "https://api.shiipp.com/api/track/1Z999AA10123456784"
+```
+</CodeGroup>
+
+## Response
+
+### 200 — Package Found
+
+<ResponseField name="success" type="boolean">
+  `true` when a matching package record is found.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Tracking details and milestone history for the package.
+
+  <Expandable title="Tracking data fields">
+    <ResponseField name="tracking" type="string">
+      The tracking number that was queried.
+    </ResponseField>
+    <ResponseField name="customer_name" type="string">
+      The name of the package recipient.
+    </ResponseField>
+    <ResponseField name="courier" type="object">
+      Branding and identity details for the assigned courier.
+
+      <Expandable title="Courier fields">
+        <ResponseField name="name" type="string">
+          Display name of the courier partner.
+        </ResponseField>
+        <ResponseField name="logo_url" type="string">
+          URL of the courier's logo image for use in your UI.
+        </ResponseField>
+        <ResponseField name="brand_color" type="string">
+          Hex color code representing the courier's brand color.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      Current package status. One of: `pending`, `in_transit`, `arrived`, `delivered`, `exception`.
+    </ResponseField>
+    <ResponseField name="milestones" type="array">
+      Ordered list of tracking events from intake to current status.
+
+      <Expandable title="Milestone fields">
+        <ResponseField name="event" type="string">
+          Human-readable description of the tracking event.
+        </ResponseField>
+        <ResponseField name="timestamp" type="string">
+          ISO 8601 timestamp of when the event occurred.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+```json Example Response (200 OK)
+{
+  "success": true,
+  "data": {
+    "tracking": "1Z999AA10123456784",
+    "customer_name": "Jane Smith",
+    "courier": {
+      "name": "AmeriJet",
+      "logo_url": "https://yourapp.com/logos/amerijet.png",
+      "brand_color": "#1a3a6b"
+    },
+    "status": "arrived",
+    "milestones": [
+      { "event": "Package Received", "timestamp": "2024-01-15T10:30:00Z" },
+      { "event": "In Transit", "timestamp": "2024-01-16T08:00:00Z" },
+      { "event": "Arrived at Facility", "timestamp": "2024-01-17T14:22:00Z" }
+    ]
+  }
+}
+```
+
+### 404 — Tracking Number Not Found
+
+If the tracking number does not match any package in the system, the endpoint returns HTTP `404 Not Found`.
+
+```json 404 Response
+{ "success": false, "error": { "code": "NOT_FOUND", "message": "Tracking number not found" } }
+```
+
+<Note>
+  This endpoint is intentionally public to enable customer self-service tracking without requiring your customers to authenticate. You are responsible for ensuring your customers only share their tracking numbers with intended recipients — Shiipp does not expose any payment, address, or account data through this endpoint.
+</Note>

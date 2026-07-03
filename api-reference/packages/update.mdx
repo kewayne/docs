@@ -1,0 +1,128 @@
+---
+title: 'PUT /api/packages/{id} — Update Package Details'
+sidebarTitle: 'Update Package'
+description: 'Modify an existing package record in Shiipp. Send only the fields you want to change — all other fields remain unchanged.'
+---
+
+Use this endpoint to update one or more fields on an existing package record. The request body accepts a partial object — you only need to include the fields you want to change. Omitted fields remain exactly as they were. This makes it straightforward to update a single attribute, such as advancing a status or correcting a weight, without re-sending the entire record.
+
+## Request
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Shiipp API key. Pass this in the request header to authenticate.
+</ParamField>
+
+**Method:** `PUT`  
+**URL:** `/api/packages/{id}`  
+**Content-Type:** `application/json`
+
+### Path Parameter
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the package you want to update (e.g. `pkg_01HZ3K5MNPQR2STV`). You can retrieve this from `GET /api/packages`.
+</ParamField>
+
+### Body Parameters
+
+Include only the fields you want to update. All fields below are optional in any single request.
+
+<ParamField body="tracking" type="string">
+  Updated carrier tracking number. Must be unique within your account.
+</ParamField>
+
+<ParamField body="customer_name" type="string">
+  Updated recipient full name.
+</ParamField>
+
+<ParamField body="weight_lbs" type="number">
+  Updated weight in pounds. When provided, `weight_kg` is automatically recalculated.
+</ParamField>
+
+<ParamField body="weight_kg" type="number">
+  Updated weight in kilograms. When provided, `weight_lbs` is automatically recalculated.
+</ParamField>
+
+<ParamField body="shipper" type="string">
+  Updated shipper or vendor name.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Updated description of the package contents.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Updated package status. Accepted values: `pending`, `in_transit`, `arrived`, `delivered`, `exception`.
+</ParamField>
+
+### Example Request
+
+<CodeGroup>
+```bash cURL
+curl --request PUT \
+  --url "https://api.shiipp.com/api/packages/pkg_01HZ3K5MNPQR2STV" \
+  --header "X-API-KEY: your_api_key_here" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "weight_lbs": 14.2,
+    "status": "in_transit"
+  }'
+```
+
+```json Request Body
+{
+  "weight_lbs": 14.2,
+  "status": "in_transit"
+}
+```
+</CodeGroup>
+
+## Response
+
+A successful request returns HTTP `200 OK` along with the full updated package object.
+
+<ResponseField name="success" type="boolean">
+  `true` when the package was updated successfully.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The updated package object reflecting all current field values.
+
+  <Expandable title="Package object fields">
+    <ResponseField name="id" type="string">
+      The package's unique identifier.
+    </ResponseField>
+    <ResponseField name="tracking" type="string">
+      The carrier tracking number.
+    </ResponseField>
+    <ResponseField name="weight_lbs" type="number">
+      Current weight in pounds.
+    </ResponseField>
+    <ResponseField name="weight_kg" type="number">
+      Current weight in kilograms. Auto-recalculated whenever `weight_lbs` is updated, and vice versa.
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      Current package status after the update.
+    </ResponseField>
+    <ResponseField name="updated_at" type="string">
+      ISO 8601 timestamp of when this update was applied.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+```json Example Response (200 OK)
+{
+  "success": true,
+  "data": {
+    "id": "pkg_01HZ3K5MNPQR2STV",
+    "tracking": "1Z999AA10123456784",
+    "weight_lbs": 14.2,
+    "weight_kg": 6.44,
+    "status": "in_transit",
+    "updated_at": "2024-01-15T14:00:00Z"
+  }
+}
+```
+
+<Note>
+  Weight fields are always kept in sync automatically. If you update `weight_lbs`, the system recalculates and overwrites `weight_kg`, and vice versa. Avoid sending both weight fields in the same request unless they represent consistent values — a mismatch will return a `422` validation error.
+</Note>

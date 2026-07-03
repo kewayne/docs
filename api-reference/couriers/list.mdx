@@ -1,0 +1,104 @@
+---
+title: 'GET /api/couriers — List Courier Partners'
+sidebarTitle: 'List Couriers'
+description: 'Retrieve all courier partners configured in your Shiipp account, including branding details and active status for each partner.'
+---
+
+Use this endpoint to fetch all courier partners associated with your Shiipp workspace. The response includes each courier's display name, AWB prefix, brand color, logo URL, and active status. This data is useful when building package intake forms, populating dropdowns, or validating `courier_id` values before submitting a `POST /api/packages` request.
+
+## Request
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Shiipp API key. Pass this in the request header to authenticate.
+</ParamField>
+
+**Method:** `GET`  
+**URL:** `/api/couriers`
+
+### Query Parameters
+
+<ParamField query="page" type="integer" default={1}>
+  The page number to retrieve. Starts at `1`.
+</ParamField>
+
+<ParamField query="per_page" type="integer" default={25}>
+  Number of courier records to return per page. Maximum value is `100`.
+</ParamField>
+
+<ParamField query="active" type="boolean">
+  When set to `true`, returns only active courier partners. When set to `false`, returns only inactive couriers. Omit this parameter to return all couriers regardless of status.
+</ParamField>
+
+### Example Request
+
+<CodeGroup>
+```bash cURL
+curl --request GET \
+  --url "https://api.shiipp.com/api/couriers?active=true" \
+  --header "X-API-KEY: your_api_key_here"
+```
+</CodeGroup>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  `true` when the request was processed successfully.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  An array of courier partner objects.
+
+  <Expandable title="Courier object fields">
+    <ResponseField name="id" type="string">
+      Unique courier identifier used when creating or filtering packages (e.g. `cou_01HZ`).
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Display name of the courier partner.
+    </ResponseField>
+    <ResponseField name="awb_prefix" type="string">
+      Air waybill prefix associated with this courier (e.g. `810`).
+    </ResponseField>
+    <ResponseField name="brand_color" type="string">
+      Hex color code for the courier's brand, used in the tracking portal UI.
+    </ResponseField>
+    <ResponseField name="logo_url" type="string">
+      URL of the courier's logo image.
+    </ResponseField>
+    <ResponseField name="active" type="boolean">
+      Whether this courier is currently active and available for new package assignments.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="meta" type="object">
+  Pagination metadata for the current response.
+
+  <Expandable title="Meta fields">
+    <ResponseField name="total" type="integer">
+      Total number of courier records matching the applied filters.
+    </ResponseField>
+    <ResponseField name="page" type="integer">
+      The current page number returned.
+    </ResponseField>
+    <ResponseField name="per_page" type="integer">
+      Number of results per page for this response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+```json Example Response (200 OK)
+{
+  "success": true,
+  "data": [
+    {
+      "id": "cou_01HZ",
+      "name": "AmeriJet",
+      "awb_prefix": "810",
+      "brand_color": "#1a3a6b",
+      "logo_url": "https://yourapp.com/logos/amerijet.png",
+      "active": true
+    }
+  ],
+  "meta": { "total": 12, "page": 1, "per_page": 25 }
+}
+```

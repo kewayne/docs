@@ -1,0 +1,115 @@
+{
+  "projectType": "saas",
+  "projectName": "Shiipp Warehouse",
+  "projectDescription": "A multi-tenant SaaS platform for freight forwarders and logistics companies to manage warehouse operations, package tracking, courier partnerships, and automated billing.",
+  "theme": "maple",
+  "primaryColor": "#ef7025",
+  "lightColor": "#eec9bc",
+  "darkColor": "#4fa1ab",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/overview",
+              "concepts/packages",
+              "concepts/couriers",
+              "concepts/manifests"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/receiving-packages",
+              "guides/tracking",
+              "guides/billing",
+              "guides/flight-manifests",
+              "guides/courier-management"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/webhooks",
+              "integrations/invoice-ninja",
+              "integrations/api-keys"
+            ]
+          },
+          {
+            "group": "Administration",
+            "pages": [
+              "admin/user-roles",
+              "admin/system-settings",
+              "admin/background-workers"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/authentication"
+            ]
+          },
+          {
+            "group": "Packages",
+            "pages": [
+              "api-reference/packages/list",
+              "api-reference/packages/create",
+              "api-reference/packages/update",
+              "api-reference/packages/track"
+            ]
+          },
+          {
+            "group": "Couriers",
+            "pages": [
+              "api-reference/couriers/list",
+              "api-reference/couriers/webhooks"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Package intake, inline editing, and dual-weight (LBS/KG) tracking",
+    "Public customer-facing tracking portal with timeline milestones",
+    "Courier partner ecosystem with custom branding, AWB sequence generation, and API key management",
+    "AES-256 encrypted inbound/outbound webhooks for real-time package and status sync",
+    "Flight manifest creation with airline auto-detection via AWB prefix",
+    "Tiered billing and rate engine with draft/published/paid invoice lifecycle",
+    "Invoice Ninja deep integration for external accounting synchronization",
+    "Role-based access control for Admins, Managers, and Courier partners",
+    "Two-factor authentication (2FA) enforcement",
+    "Executive dashboard with real-time KPIs, 14-day intake trends, and courier distribution charts",
+    "Export capabilities to CSV, XLSX, and JSON",
+    "Background worker supervisor for dispatch daemon management",
+    "Drag-and-drop webhook payload designer with template variables"
+  ],
+  "publicApiSurface": [
+    "GET /api/packages — list and filter packages",
+    "POST /api/packages — create a new package intake record",
+    "PUT /api/packages/{id} — update package details (weight, tracking, description)",
+    "GET /api/track/{tracking_number} — public tracking endpoint returning timeline milestones",
+    "GET /api/couriers — list courier partners",
+    "POST /api/couriers/{id}/webhooks — register inbound webhook for a courier",
+    "X-API-KEY bearer token authentication for all API endpoints",
+    "Webhook payload variables: {{package_id}}, {{tracking}}, {{weight_lbs}}, {{weight_kg}}, {{status}}, {{courier}}, {{customer_name}}",
+    "Webhook events: customer_sync, package_intake, status_update"
+  ]
+}

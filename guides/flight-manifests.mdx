@@ -1,0 +1,79 @@
+---
+title: 'Create and Manage Flight Cargo Manifests'
+sidebarTitle: 'Flight Manifests'
+description: 'Build accurate flight cargo manifests in Shiipp Warehouse with automatic airline detection, real-time weight aggregation, and one-click export.'
+---
+
+Before a cargo flight departs, airlines require a complete manifest listing every package on board — its tracking number, weight, consignee, and the Master Air Waybill (AWB) it travels under. Shiipp Warehouse builds these manifests for you by pulling packages directly from the Data Explorer, aggregating weights in real time, and auto-detecting the airline from the AWB prefix so there is no manual lookup required.
+
+## Building a New Manifest
+
+<Steps>
+  <Step title="Go to Manifests">
+    Select **Manifests** from the left sidebar. The manifest list opens showing all past and in-progress manifests.
+  </Step>
+  <Step title="Click New Manifest">
+    Click **New Manifest** in the top-right corner to open the manifest builder.
+  </Step>
+  <Step title="Enter the Master AWB number">
+    Type the Master AWB number into the AWB field. Shiipp Warehouse reads the numeric prefix and **auto-detects the airline** — the carrier name and logo populate instantly. For example, entering `106-12345678` identifies the shipment as a **Caribbean Airlines** flight.
+  </Step>
+  <Step title="Add packages">
+    Use the package search panel to add packages to the manifest. Search by **tracking number** or **customer name**. Click **Add** next to each result, or select multiple packages and click **Add Selected**.
+  </Step>
+  <Step title="Review volume aggregation">
+    As you add packages, the **Volume Aggregation Panel** on the right updates in real time. Confirm the total package count and consolidated weight (shown in both LBS and KG) before finalizing.
+  </Step>
+  <Step title="Save the manifest">
+    Click **Save**. The manifest is stored and remains editable until you export or lock it for submission.
+  </Step>
+</Steps>
+
+<Tip>
+  Create manifests the day before the scheduled flight. This gives your team time to make final weight adjustments, add late-arriving packages, and resolve any discrepancies before the cargo cut-off.
+</Tip>
+
+## Airline Auto-Detection
+
+Shiipp Warehouse maps the numeric AWB prefix to a carrier automatically. The following airlines are supported out of the box:
+
+| AWB Prefix | Airline |
+|------------|---------|
+| 106 | Caribbean Airlines |
+| 810 | AmeriJet |
+| 175 | IBC Airways |
+
+When you enter an AWB number, the system strips the prefix and matches it against this table. If a prefix is not recognized, Shiipp Warehouse prompts you to enter the airline name manually — the manifest will still be created correctly.
+
+<Note>
+  Contact Shiipp Warehouse support to add additional airline prefixes to your account configuration. Custom prefix mappings are available on all plan tiers.
+</Note>
+
+## Volume Aggregation
+
+The Volume Aggregation Panel gives you a live summary of everything on the manifest:
+
+<CardGroup cols={2}>
+  <Card title="Total Packages" icon="boxes-stacked">
+    A running count of every package added to the manifest. Updates immediately when you add or remove a package.
+  </Card>
+  <Card title="Consolidated Weight" icon="weight-scale">
+    The sum of all package weights, displayed in both **LBS** and **KG**. Use this figure to verify against the airline's weight limit before submission.
+  </Card>
+</CardGroup>
+
+If a package weight was entered incorrectly during intake, update it via inline editing in the Data Explorer before adding the package to the manifest. Changes to weight propagate to all manifests that include the package.
+
+## Manifest Export
+
+When the manifest is complete, click **Export** to generate the submission file. You can also click **Print** to produce a formatted PDF copy for physical records or airline check-in desks.
+
+The exported file includes:
+- Master AWB number and airline
+- Flight date and origin/destination codes
+- Itemized package list with tracking numbers, weights, consignees, and courier partners
+- Total package count and gross weight
+
+<Note>
+  Packages that have not yet been assigned to a courier partner will not appear in manifest package search results. Assign a courier to the package in the Data Explorer before building the manifest.
+</Note>

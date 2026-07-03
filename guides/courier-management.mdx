@@ -1,0 +1,85 @@
+---
+title: 'Onboard and Manage Courier Partners'
+sidebarTitle: 'Courier Management'
+description: 'Add courier partners, configure AWB sequences and custom branding, manage API credentials, and set up webhooks in Shiipp Warehouse.'
+---
+
+Courier partners are the foundation of your Shiipp Warehouse workspace. Every package, invoice, manifest, and tracking page is tied to a courier — so the first step after setting up your account is onboarding each partner, configuring their branding, and providing them with API credentials. This guide walks you through the full setup process and explains how to maintain courier accounts over time.
+
+## Adding a New Courier
+
+<Steps>
+  <Step title="Go to Couriers">
+    Select **Couriers** from the left sidebar to open the courier management list.
+  </Step>
+  <Step title="Click New Courier">
+    Click **New Courier** in the top-right corner to open the courier setup form.
+  </Step>
+  <Step title="Enter courier information">
+    Fill in the courier's **name** and **contact information** (email address, phone number, and billing contact). These details appear on invoices and are used for automated billing notifications.
+  </Step>
+  <Step title="Set AWB sequences">
+    Configure the AWB settings for this courier:
+    - **AWB Prefix** — the numeric airline prefix (e.g., `106` for Caribbean Airlines)
+    - **Master AWB Starting Number** — the first number in the Master AWB sequence
+    - **House AWB Starting Number** — the first number in the House AWB sequence
+    Shiipp Warehouse auto-increments both sequences with each new shipment so you never assign duplicate AWB numbers.
+  </Step>
+  <Step title="Upload branding assets">
+    Upload a **courier logo** (PNG or SVG, recommended 200×60 px) and enter a **brand hex color** (e.g., `#1A56DB`). These assets appear on tracking pages, invoices, and dashboard charts.
+  </Step>
+  <Step title="Save — API credentials are provisioned">
+    Click **Save**. Shiipp Warehouse creates the courier profile and **automatically generates an API key** (`X-API-KEY`). Share this key with the courier's technical team so they can begin sending prealerts and webhook events.
+  </Step>
+</Steps>
+
+## Custom Branding
+
+Each courier partner can have their own visual identity throughout the platform:
+
+<Accordion title="Logo">
+  Upload a PNG or SVG file. The logo appears on the public tracking page header, printed invoices, and the courier selector in the Data Explorer. Use a transparent background for best results across light and dark contexts.
+</Accordion>
+
+<Accordion title="Brand Hex Color">
+  Enter a six-character hex code (e.g., `#E63A2E`). The color is used for chart series in the dashboard, status badge backgrounds, and accent elements on the tracking page. Choose a color with sufficient contrast against white backgrounds.
+</Accordion>
+
+<Accordion title="Display Name">
+  The display name is shown to customers on tracking pages and to your staff in dropdowns throughout the application. It can differ from the legal company name — for example, you might use a short trade name for display purposes.
+</Accordion>
+
+## AWB Sequences
+
+Shiipp Warehouse manages AWB number assignment automatically using the sequences you configure at onboarding.
+
+| Setting | Description |
+|---------|-------------|
+| **Prefix** | The numeric airline identifier prepended to every AWB number |
+| **Start Number** | The first AWB number Shiipp Warehouse will assign |
+| **Increment** | How much each new AWB advances (default: `1`) |
+
+The system assigns the next available number in the sequence each time a new shipment is created for this courier. To reset or adjust the sequence — for example, after a block of numbers is reserved by the airline — go to **Couriers → [Courier Name] → AWB Settings** and update the current sequence position.
+
+## API Credentials
+
+When you save a new courier, Shiipp Warehouse provisions a unique **`X-API-KEY`** for that partner. This key authenticates all API requests made on behalf of the courier — including prealert submissions and status webhook callbacks.
+
+To locate the API key:
+
+1. Open **Couriers** in the sidebar.
+2. Click the courier's name to open their profile.
+3. Navigate to the **API Credentials** tab.
+4. Click **Reveal Key** to display the full key value, then copy it.
+
+<Warning>
+  Rotating an API key **immediately invalidates the existing key**. Any integration — including prealert feeds, carrier webhooks, and third-party connections — that uses the old key will stop working the moment you rotate. Update all integrations with the new key before clicking **Rotate**.
+</Warning>
+
+To rotate a compromised key, click **Rotate Key** on the API Credentials tab, confirm the action, then distribute the new key to all affected integrations.
+
+## Webhook Configuration
+
+Courier partners can push prealerts and shipment status events to Shiipp Warehouse via webhook. Each courier's auto-provisioned API key is used to authenticate inbound webhook requests.
+
+For a complete walkthrough of webhook event types, payload schemas, and endpoint configuration, see the [Webhooks Integration Guide](/integrations/webhooks).

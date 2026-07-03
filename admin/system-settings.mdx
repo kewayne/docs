@@ -1,0 +1,74 @@
+---
+title: 'System Settings and Platform Configuration'
+sidebarTitle: 'System Settings'
+description: 'Configure global platform behaviour in Shiipp Warehouse, including billing rates, exception thresholds, dashboard KPIs, and export defaults.'
+---
+
+System Settings is the central control panel for your Shiipp Warehouse installation. Changes made here apply platform-wide and affect every user, courier, and integration connected to your account. Only users with the **Admin** role can access or modify these settings.
+
+## General Settings
+
+The General Settings section controls the core identity and locale of your platform instance.
+
+| Setting           | Description                                                                 |
+|-------------------|-----------------------------------------------------------------------------|
+| **Company Name**  | Displayed in the platform header, exported reports, and customer-facing emails. |
+| **Default Currency** | The currency used across invoices, billing summaries, and rate cards when no courier-specific currency is configured. |
+| **Timezone**      | Determines how timestamps are displayed throughout the UI and in exported files. |
+| **Language**      | Sets the UI language for all users. Individual users cannot override this setting. |
+
+## Billing Configuration
+
+The Billing Configuration section lets you define the global rate fallbacks that apply when a courier does not have its own pricing rules set up.
+
+**Default Weight-Tier Rates** — Define per-tier rate breakpoints (e.g., 0–5 lb, 5–20 lb, 20+ lb) that serve as the platform-wide fallback when no courier-specific weight-tier rate is found during invoice generation.
+
+**Air Freight Base Rate** — Set the base rate per **LB** or **KG** for air freight shipments. Toggle between weight units using the unit selector next to the rate input. This rate is applied before any surcharges.
+
+**Surcharge Types** — Configure the list of surcharge categories available when staff make manual billing adjustments on a package. Add, rename, or deactivate surcharge types to match your operational billing taxonomy (e.g., Fuel Surcharge, Oversize, Remote Delivery).
+
+<Tip>
+  Set your global default rates first before configuring individual couriers. Courier-specific overrides will take precedence over these global values, so the defaults only apply where no courier-level rate exists. Configure courier-specific pricing in each courier's own settings page.
+</Tip>
+
+## Exception Alerts
+
+Exception Alerts determine when the colored badge indicators appear on your dashboard navigation items, signalling that items require attention.
+
+| Alert Type            | Description                                                                          |
+|-----------------------|--------------------------------------------------------------------------------------|
+| **Unknown Packages**  | Packages received with a tracking number that doesn't match any prealert. Set the minimum count before the badge appears. |
+| **Pending Claims**    | Open damage or loss claims awaiting resolution. Set a threshold (e.g., show badge when count > 0). |
+| **Name Mismatches**   | Packages where the declared recipient name doesn't match the courier's manifest data. |
+| **Failed API Syncs**  | Courier API sync attempts that returned an error within the last 24 hours.            |
+
+Adjust each threshold to reflect your team's operational tolerance. Setting a threshold to **0** means any single occurrence triggers the badge immediately.
+
+## Dashboard KPIs
+
+The Dashboard KPIs section controls what appears on the executive dashboard visible to Admins after login.
+
+- **Visible Metrics** — Toggle individual KPI cards on or off. Available metrics include total packages received (MTD), invoices generated, open exceptions, average processing time, and courier distribution.
+- **Courier Inclusion in MTD Charts** — Select which courier accounts are included in the month-to-date package distribution chart. Exclude inactive or test couriers to keep executive reporting clean.
+
+## Export Defaults
+
+Set the default file format used when a user triggers a package export from any list view.
+
+<Tabs>
+  <Tab title="CSV">
+    Comma-separated values. Best for compatibility with external tools, spreadsheet applications, and legacy import workflows. All date fields are exported in ISO 8601 format.
+  </Tab>
+  <Tab title="XLSX">
+    Microsoft Excel workbook format. Preserves column headers, applies basic formatting, and supports multi-sheet exports for large datasets. Recommended for manual review workflows.
+  </Tab>
+  <Tab title="JSON">
+    Structured JSON array. Each package is a separate object with all available fields. Use this format for downstream processing by internal tools or data pipelines.
+  </Tab>
+</Tabs>
+
+Users can override the default format at the point of export without changing this setting.
+
+<Note>
+  All system settings changes take effect immediately across the platform. No restart or deployment is required. Users currently logged in will see the updated behaviour on their next page load or action.
+</Note>

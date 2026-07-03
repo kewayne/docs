@@ -1,0 +1,90 @@
+---
+title: 'Monitor and Manage Background Dispatch Workers'
+sidebarTitle: 'Background Workers'
+description: 'Monitor, start, stop, and troubleshoot the background dispatch workers that power async tasks in Shiipp Warehouse.'
+---
+
+Background workers are the engine behind Shiipp Warehouse's asynchronous operations. Rather than making users wait for network calls, file processing, or third-party sync operations to complete, the platform delegates these tasks to persistent daemon processes that run continuously in the background. Understanding how to monitor and manage these workers is essential for maintaining a healthy, fully operational warehouse environment.
+
+## What Are Background Workers
+
+The core background process in Shiipp Warehouse is the **`shiipp-wh-worker`** daemon. This single worker handles the full suite of asynchronous platform tasks:
+
+<CardGroup cols={2}>
+  <Card title="Webhook Deliveries" icon="webhook">
+    Dispatches outbound webhook events to registered courier partner endpoints when package statuses change or new packages are received.
+  </Card>
+  <Card title="Invoice Sync" icon="file-invoice-dollar">
+    Synchronizes generated invoices with any connected billing or ERP integrations and marks packages as billed in the platform.
+  </Card>
+  <Card title="Prealert Processing" icon="box-open">
+    Processes inbound prealert files and API payloads from couriers, matching them to expected packages and flagging discrepancies.
+  </Card>
+  <Card title="Status Update Dispatch" icon="arrows-rotate">
+    Polls courier APIs on a configured schedule and propagates status changes to the Shiipp Warehouse package records.
+  </Card>
+</CardGroup>
+
+## Worker Status Dashboard
+
+Access the worker monitoring interface by navigating to **System → Workers** in the left-hand navigation panel. The dashboard displays a table of all registered workers with their current status.
+
+| Status Indicator | Meaning |
+|------------------|---------|
+| 🟢 **Running**   | The worker process is active and processing its task queue normally. |
+| 🔴 **Stopped**   | The worker is not running. Tasks assigned to this worker are queued but not being processed. |
+| 🟠 **Error**     | The worker encountered a fatal exception and terminated. Review the `.err` log stream to diagnose the cause. |
+
+The **Last Heartbeat** column shows the timestamp of the most recent health ping from the worker. A heartbeat older than 60 seconds on a worker showing **Running** may indicate the process is frozen; restart it to recover.
+
+## Starting and Stopping Workers
+
+<Steps>
+  <Step title="Open the Background Workers panel">
+    Navigate to **System → Background Workers** in the left-hand navigation. The full list of registered workers is displayed.
+  </Step>
+  <Step title="Locate the target worker">
+    Find the worker you want to manage in the table. For most operations this will be **`shiipp-wh-worker`**. Use the search field if your installation has multiple registered workers.
+  </Step>
+  <Step title="Choose an action">
+    Click **Start**, **Stop**, or **Restart** in the Actions column for the target worker row.
+  </Step>
+  <Step title="Confirm the action">
+    A confirmation dialog appears describing the impact of the action. Review it and click **Confirm** to proceed.
+  </Step>
+  <Step title="Verify the new status">
+    The status indicator updates within a few seconds. A **Running** status with a fresh **Last Heartbeat** timestamp confirms the worker started successfully.
+  </Step>
+</Steps>
+
+<Warning>
+  Stopping the dispatch worker immediately pauses all outbound webhook deliveries and background data sync until the worker is restarted. Webhooks that fire during the stopped window are queued and delivered in order once the worker resumes — but time-sensitive integrations may experience delays.
+</Warning>
+
+## Viewing Logs
+
+Every worker exposes two real-time log streams, accessible by clicking the worker name in the Status Dashboard:
+
+**Standard Output (`.out`)** — Contains normal operational messages: task start and completion events, webhook delivery confirmations, sync cycle summaries, and info-level diagnostics. Use this stream to verify the worker is processing tasks as expected.
+
+**Standard Error (`.err`)** — Contains warnings, exceptions, and fatal error messages. When a worker moves to **Error** or **Stopped** status unexpectedly, this is the first place to check. Stack traces for unhandled exceptions are written here in full.
+
+Logs are displayed in a terminal-style interface with real-time streaming updates. You can pause the stream, copy selected lines, or download the full log buffer using the controls above the log panel.
+
+## Common Issues
+
+<AccordionGroup>
+  <Accordion title="Worker shows 'Stopped' unexpectedly">
+    A worker that stops without a manual action has almost certainly crashed due to an unhandled exception. Open the **`.err`** log stream for the worker and look for the most recent stack trace or fatal error message. Common causes include database connectivity loss, misconfigured environment variables, and out-of-memory conditions. Resolve the underlying cause before restarting the worker to prevent an immediate recurrence.
+  </Accordion>
+  <Accordion title="Webhooks not delivering">
+    First, confirm that the **`shiipp-wh-worker`** is in **Running** status with a recent heartbeat. If the worker is running, check the **Failed Webhook Count** badge on the courier's webhook configuration panel — a high count suggests the destination endpoint is rejecting or timing out requests. Review the endpoint URL, authentication headers, and firewall rules on the receiving server.
+  </Accordion>
+  <Accordion title="High memory usage">
+    If the worker's memory metric in the Status Dashboard climbs steadily over time without returning to baseline, the process is likely experiencing a memory leak in a long-running task cycle. Perform a **Restart** to reclaim memory immediately. If the memory growth resumes within a short period after restart, capture the `.err` log and contact Shiipp support with the log excerpt and the approximate time the growth began.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  Workers restart automatically after every platform update. You do not need to manually start workers following a scheduled maintenance window or version upgrade.
+</Note>

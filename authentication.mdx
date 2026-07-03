@@ -1,0 +1,131 @@
+---
+title: 'Authenticate with Shiipp Warehouse API'
+sidebarTitle: 'Authentication'
+description: 'Learn how to log in to the Shiipp Warehouse dashboard with 2FA, generate API keys, authenticate API requests, and rotate credentials safely.'
+---
+
+Shiipp Warehouse protects your tenant data through two distinct authentication layers: an interactive dashboard login secured with two-factor authentication, and a per-courier API key scheme for programmatic access. Understanding both is essential before you build integrations or onboard your team.
+
+## Dashboard Login
+
+You can log in to the Shiipp Warehouse dashboard using either of two identifiers:
+
+- **Email address** — your registered work email and password.
+- **Operator ID** — a numeric identifier assigned by your administrator, useful for shared operator accounts that are not tied to a personal email.
+
+### Two-Factor Authentication (2FA)
+
+2FA is strongly recommended and can be enforced tenant-wide by your administrator. Once enabled, every login requires a time-based one-time password (TOTP) from a compatible authenticator app:
+
+- [Google Authenticator](https://googleauthenticator.net/)
+- [Authy](https://authy.com/)
+- [1Password](https://1password.com/)
+- Any RFC 6238-compliant TOTP app
+
+To enable 2FA, go to **Settings → Security → Two-Factor Authentication** and scan the QR code with your app. Store your backup codes in a secure location — they are the only way to recover access if you lose your device.
+
+### Role-Based Routing After Login
+
+After a successful login, Shiipp Warehouse routes you to the correct section of the platform based on your assigned role:
+
+| Role | Default landing page |
+|---|---|
+| **Admin** | Company dashboard (full access) |
+| **Warehouse Staff** | Package intake queue |
+| **Courier Manager** | Courier-specific package list |
+| **Billing** | Invoices and reports |
+
+Your administrator assigns roles under **Settings → Users**.
+
+---
+
+## API Authentication
+
+All API requests to Shiipp Warehouse must include a valid API key in the `X-API-KEY` request header. There is no session-based authentication for the API — every request is independently authenticated.
+
+### Getting an API Key
+
+API keys are scoped per courier partner. To generate one:
+
+1. Go to **Couriers** in the left sidebar.
+2. Select the courier you want to generate a key for.
+3. Open the **Settings** tab within the courier detail view.
+4. Click **API Keys → Generate New Key**.
+5. Copy the key immediately — it is only shown once in full at generation time.
+
+<Warning>
+  Keep your API keys secret at all times. Never hardcode a key in client-side code, commit it to a version control repository, or share it in plain text over email or chat. Use environment variables or a secrets manager (e.g., AWS Secrets Manager, HashiCorp Vault, Doppler) to inject keys at runtime.
+</Warning>
+
+### Making Authenticated Requests
+
+Pass your API key in the `X-API-KEY` header on every request:
+
+```bash
+curl -X GET https://yourapp.com/api/packages \
+  -H 'X-API-KEY: your_api_key_here' \
+  -H 'Content-Type: application/json'
+```
+
+You can also retrieve a single package by tracking number:
+
+```bash
+curl -X GET https://yourapp.com/api/packages/FSE-00001 \
+  -H 'X-API-KEY: your_api_key_here' \
+  -H 'Content-Type: application/json'
+```
+
+<Tip>
+  Create a separate API key for each integration — your warehouse management system, your e-commerce platform, your webhook processor, and so on. This way you can revoke a single key if an integration is compromised without disrupting every other connection.
+</Tip>
+
+---
+
+## Key Rotation
+
+Rotate API keys regularly, or immediately after a suspected exposure. You can rotate a key without any downtime by following this sequence:
+
+<Steps>
+  <Step title="Generate the new key">
+    In **Couriers → [Courier Name] → Settings → API Keys**, click **Generate New Key**. Copy and store it securely before closing the modal.
+  </Step>
+  <Step title="Deploy the new key to your integrations">
+    Update the `X-API-KEY` value in every service or environment variable that uses the old key. Verify that each integration is successfully authenticating with the new key before proceeding.
+  </Step>
+  <Step title="Revoke the old key">
+    Return to **API Keys**, find the old key in the list, and click **Revoke**. Revocation is immediate and permanent — any request still using the old key will receive a `401 Unauthorized` response.
+  </Step>
+</Steps>
+
+---
+
+## Error Responses
+
+The API returns standard HTTP error codes when authentication fails:
+
+| Status | Code | Meaning |
+|---|---|---|
+| `401` | `Unauthorized` | The `X-API-KEY` header is missing, malformed, or the key has been revoked. |
+| `403` | `Forbidden` | The key is valid but the associated courier role does not have permission to perform this action. |
+
+Example `401` response body:
+
+```json
+{
+  "error": "Unauthorized",
+  "message": "Invalid or missing API key. Provide a valid key in the X-API-KEY header.",
+  "status": 401
+}
+```
+
+Example `403` response body:
+
+```json
+{
+  "error": "Forbidden",
+  "message": "Your API key does not have permission to perform this action.",
+  "status": 403
+}
+```
+
+If you receive a `403`, check the role assigned to the courier whose key you are using. Contact your Shiipp Warehouse administrator to adjust permissions if needed.

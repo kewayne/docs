@@ -1,38 +1,13 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "theme": "maple",
+  "name": "Shiipp Warehouse",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#ef7025",
+    "light": "#eec9bc",
+    "dark": "#4fa1ab"
   },
   "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
@@ -41,32 +16,96 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@shiipp.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Go to App",
+      "href": "https://app.shiipp.com"
     }
   },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/overview",
+              "concepts/packages",
+              "concepts/couriers",
+              "concepts/manifests"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/receiving-packages",
+              "guides/tracking",
+              "guides/billing",
+              "guides/flight-manifests",
+              "guides/courier-management"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/webhooks",
+              "integrations/invoice-ninja",
+              "integrations/api-keys"
+            ]
+          },
+          {
+            "group": "Administration",
+            "pages": [
+              "admin/user-roles",
+              "admin/system-settings",
+              "admin/background-workers"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/authentication"
+            ]
+          },
+          {
+            "group": "Packages",
+            "pages": [
+              "api-reference/packages/list",
+              "api-reference/packages/create",
+              "api-reference/packages/update",
+              "api-reference/packages/track"
+            ]
+          },
+          {
+            "group": "Couriers",
+            "pages": [
+              "api-reference/couriers/list",
+              "api-reference/couriers/webhooks"
+            ]
+          }
+        ]
+      }
     ]
   },
   "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    "socials": {}
   }
 }

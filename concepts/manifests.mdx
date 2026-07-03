@@ -1,0 +1,78 @@
+---
+title: 'Flight Manifests: Grouping Packages for Air Cargo'
+sidebarTitle: 'Manifests'
+description: 'Learn how Shiipp Warehouse flight manifests consolidate packages under a Master AWB, auto-detect airlines, and aggregate weight for air cargo shipments.'
+---
+
+A flight manifest is the organizing document that sits at the heart of every outbound air cargo shipment. Rather than managing dozens or hundreds of individual packages in isolation, a manifest groups them into a single consolidated record tied to a specific flight and Master AWB number. Shiipp Warehouse builds this model directly into the platform, so your team can move from package intake to a print-ready manifest without leaving the application or stitching together spreadsheets.
+
+## What Is a Flight Manifest
+
+A **flight manifest** is a container that groups a set of packages traveling together on the same flight under the same **Master AWB (MAWB)**. It serves as the primary reference document for:
+
+- **Customs and border agencies** — The manifest lists every package in the consolidated shipment, its weight, description, and shipper details.
+- **Airline ground handlers** — Ground teams use the manifest to verify cargo at origin and destination airports.
+- **Your billing workflow** — The manifest's consolidated weight and package count drive invoice line items for the relevant shippers.
+
+Each manifest in Shiipp Warehouse belongs to one organization and is linked to exactly one Master AWB. A package can belong to only one manifest at a time.
+
+## Airline Auto-Detection
+
+When you create a manifest, you supply the **Master AWB number**. The platform reads the 3-digit prefix of that AWB and automatically resolves the operating airline — populating the airline name and displaying the corresponding carrier logo throughout the manifest view.
+
+| AWB Prefix | Airline Assigned |
+|------------|-----------------|
+| 106 | Caribbean Airlines |
+| 810 | AmeriJet |
+| 175 | IBC Airways |
+
+For example, entering a Master AWB of `810-12345678` will automatically label the manifest as an **AmeriJet** shipment and display the AmeriJet logo on the manifest summary card, the printed document header, and any customer-facing export.
+
+<Info>
+  If you enter a Master AWB with an unrecognized prefix, the platform will still create the manifest successfully. You can manually enter the airline name, and the manifest will display a generic carrier icon until a matching prefix is configured for that courier.
+</Info>
+
+## Volume Aggregation
+
+As you add packages to a manifest, Shiipp Warehouse recalculates the manifest's totals in real time:
+
+- **Total Package Count** — The number of individual packages currently assigned to the manifest.
+- **Total Weight (LBS)** — The sum of all package weights in pounds.
+- **Total Weight (KG)** — The sum of all package weights in kilograms.
+
+These aggregated figures are displayed prominently on the manifest summary card and are included in all manifest exports. Because both weight units are stored on each package record (see [Dual Weight System](/concepts/packages#dual-weight-system)), aggregation is a direct database sum — no conversion is applied at manifest time, eliminating rounding drift across large shipments.
+
+## Manifest Workflow
+
+<Steps>
+  <Step title="Create the Manifest">
+    Navigate to **Manifests → New Manifest**. Enter the **Master AWB number**, the **flight date**, and any relevant notes. The platform auto-detects the airline from the AWB prefix and pre-fills the carrier name and logo.
+  </Step>
+  <Step title="Add Packages">
+    Use the package search to find and assign packages to the manifest. You can filter by courier, status, or shipper name. Each package you add immediately updates the manifest's running weight and count totals. Only packages that are already assigned to a courier partner can be added to a manifest.
+  </Step>
+  <Step title="Review Consolidated Weights">
+    On the manifest detail page, review the **Total Weight (LBS / KG)** and **Total Package Count**. Verify that the consolidated figures match your physical scale readings and any airline weight limits before finalizing the manifest.
+  </Step>
+  <Step title="Export or Print the Manifest">
+    When the manifest is ready, click **Export** to download a PDF, CSV, or XLSX version. The PDF format is formatted for printing and includes the airline logo, Master AWB, flight date, and a table of all included packages. Hand the printed manifest to your ground handler or upload it to the airline's cargo portal.
+  </Step>
+</Steps>
+
+<Note>
+  Packages must be assigned to a courier partner before they can be added to a manifest. If a package shows a **Pending** status with no courier assigned, assign the courier first from the package detail view or via inline editing in the data explorer, then return to the manifest to add it.
+</Note>
+
+## Manifest States
+
+<Accordion title="Open">
+  The manifest is actively being built. Packages can be added or removed freely. Weight totals update in real time. No export has been finalized.
+</Accordion>
+
+<Accordion title="Finalized">
+  The manifest has been reviewed and locked. Package additions and removals are disabled to preserve the integrity of the document. You can still export or print a finalized manifest at any time.
+</Accordion>
+
+<Accordion title="Archived">
+  The manifest has been closed after the associated flight has departed. Archived manifests are read-only and retained for audit and billing purposes. They remain searchable and exportable indefinitely.
+</Accordion>

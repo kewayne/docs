@@ -1,0 +1,77 @@
+---
+title: 'Receive and Process Incoming Packages'
+sidebarTitle: 'Receiving Packages'
+description: 'Learn how to log incoming packages, edit records inline, run bulk operations, and export your package data from Shiipp Warehouse.'
+---
+
+When a shipment arrives at your facility, Shiipp Warehouse gives you a fast intake workflow that auto-detects the carrier, converts weight units on the fly, and immediately surfaces the package to every team member in the Data Explorer. The sections below walk you through each stage — from first scan to bulk export.
+
+## Logging a New Package
+
+<Steps>
+  <Step title="Navigate to Packages">
+    Select **Packages** from the left sidebar. The Data Explorer opens showing all packages in the current view.
+  </Step>
+  <Step title="Click New Package">
+    Click the **New Package** button in the top-right corner of the Data Explorer to open the intake form.
+  </Step>
+  <Step title="Enter the tracking number">
+    Type or paste the carrier tracking number. Shiipp Warehouse reads the prefix and **auto-detects the courier** — the carrier name and logo populate automatically. Verify the detected carrier before continuing.
+  </Step>
+  <Step title="Enter the package weight">
+    Type the weight in either **LBS or KG**. The system immediately converts and displays the equivalent value in the other unit so you never need a separate calculator.
+  </Step>
+  <Step title="Fill in the package details">
+    Complete the remaining intake fields:
+    - **Shipper / Vendor** — the sender or merchant name
+    - **Description** — a brief description of the contents
+    - **Customer Name** — the consignee who will collect or receive the package
+  </Step>
+  <Step title="Assign a courier partner">
+    Choose the **Courier Partner** from the dropdown. This links the package to the correct billing ledger and tracking portal.
+  </Step>
+  <Step title="Save the package">
+    Click **Save**. The package is immediately visible in the Data Explorer and its tracking page goes live at your public tracking URL.
+  </Step>
+</Steps>
+
+## Inline Editing
+
+After a package has been logged, you can correct or update any field directly in the Data Explorer table — no modal required.
+
+Click any editable cell (weight, tracking number, shipper, description, or customer name) to activate the inline editor. Type your changes and press **Enter** or click outside the cell to save. The record updates instantly and the change is logged in the package audit trail.
+
+This is especially useful during high-volume intake shifts where opening a full edit form for every correction would slow your team down.
+
+## Bulk Operations
+
+When you need to update many packages at once, the bulk selection mode eliminates repetitive clicks.
+
+1. Check the box in the table header to select all visible packages, or check individual row checkboxes for a subset.
+2. The **Bulk Actions** toolbar appears at the top of the table.
+3. Choose an action — such as **Update Status** — from the toolbar dropdown.
+4. Confirm the action. Shiipp Warehouse applies the change to every selected package in a single operation and displays a success count.
+
+<Note>
+  Bulk status updates respect your courier-partner filter. If you have filtered the Data Explorer to a specific courier, only packages belonging to that courier are affected — even if you select all.
+</Note>
+
+## Exporting Package Data
+
+Click the **Export** button above the Data Explorer to download your current package list. A dialog lets you choose your preferred format:
+
+| Format | Best for |
+|--------|----------|
+| **CSV** | Spreadsheet tools, custom scripts |
+| **XLSX** | Excel-formatted reports with column headers |
+| **JSON** | API integrations and developer pipelines |
+
+Any active filters — courier partner, date range, status, search query — are applied automatically to the export. What you see in the table is exactly what you get in the file.
+
+<Tip>
+  Use the **Prealerts** tab to stage expected packages before they physically arrive at your facility. Prealerted packages show in the system immediately and move to the main package list the moment physical receipt is confirmed.
+</Tip>
+
+<Note>
+  When a package cannot be matched to a known customer, Shiipp Warehouse raises an **Unknown Package** alert on your dashboard. Resolve these alerts by assigning the package to the correct customer before it moves further through the workflow.
+</Note>

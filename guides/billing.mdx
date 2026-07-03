@@ -1,0 +1,101 @@
+---
+title: 'Generate Invoices and Manage Billing for Couriers'
+sidebarTitle: 'Billing'
+description: 'Configure rate tiers, build courier invoices, add manual adjustments, and publish or export billing records in Shiipp Warehouse.'
+---
+
+Shiipp Warehouse handles the full billing lifecycle for your courier partners — from calculating per-package fees based on weight tiers to publishing a finished invoice and syncing it to your accounting software. The rate engine runs automatically as packages are processed, so by the time you open the invoice builder, the numbers are already there.
+
+## Rate Engine
+
+Shiipp Warehouse calculates package fees using a tiered weight-based rate system with two levels of configuration:
+
+<CardGroup cols={2}>
+  <Card title="Global Default Rates" icon="globe">
+    A set of base rates organized by weight tier (e.g., 0–5 LBS, 5–20 LBS, 20+ LBS). These apply to any courier partner that does not have a custom rate agreement configured.
+  </Card>
+  <Card title="Custom Courier Rates" icon="handshake">
+    Negotiated rates you set per courier partner that override the global defaults. Configure these before generating the first invoice to ensure accuracy.
+  </Card>
+</CardGroup>
+
+For air freight shipments, an **air freight base rate** is applied to whichever is greater — the actual weight or the dimensional weight (calculated from package dimensions). This ensures that large, light packages are billed accurately.
+
+<Tip>
+  Configure custom rates for each courier partner before generating your first invoice. Navigate to **Couriers → [Courier Name] → Rates** to set per-tier pricing. Rates apply retroactively only if packages have not yet been invoiced.
+</Tip>
+
+## Ledger & Invoice Lifecycle
+
+Every invoice moves through three states:
+
+<Tabs>
+  <Tab title="Draft">
+    The invoice is being built. Packages can still be added or removed, and line items can be adjusted. The courier partner cannot see a draft invoice.
+  </Tab>
+  <Tab title="Published">
+    The invoice has been sent to the courier partner. The total is locked. The courier can view and download the invoice from their portal. If Invoice Ninja sync is enabled, the invoice is pushed automatically at this stage.
+  </Tab>
+  <Tab title="Paid">
+    The invoice has been marked as settled. The balance is cleared from the courier's ledger and the payment date is recorded.
+  </Tab>
+</Tabs>
+
+## Creating an Invoice
+
+<Steps>
+  <Step title="Go to Accounting">
+    Select **Accounting** from the left sidebar to open the billing dashboard.
+  </Step>
+  <Step title="Select courier and billing period">
+    Click **New Invoice**, then choose the **Courier Partner** and set the **Billing Period** (start and end dates). Shiipp Warehouse loads all eligible packages processed during that period.
+  </Step>
+  <Step title="Review auto-calculated fees">
+    Inspect the itemized package list. Each row shows the tracking number, weight, weight tier, applied rate, and calculated fee. Verify that the correct rate tier is applied to each package.
+  </Step>
+  <Step title="Add manual adjustments">
+    Click **Add Adjustment** to insert a custom line item. Choose the adjustment type:
+    - **Surcharge** — additional charge (e.g., oversized handling, fuel surcharge)
+    - **Transportation** — ground or local delivery fee
+    - **Materials** — packaging materials charged to the courier
+    - **Override** — replace a package fee with a fixed amount
+    Enter an amount and an optional description for each line item.
+  </Step>
+  <Step title="Review the ledger summary">
+    The ledger summary panel at the bottom of the screen shows the running total, any balance carried forward from a previous period, applied discounts, and the final amount due.
+  </Step>
+  <Step title="Publish the invoice">
+    Click **Publish** to finalize and deliver the invoice to the courier partner. The invoice state moves from **Draft** to **Published** and can no longer be edited.
+  </Step>
+</Steps>
+
+## Invoice Contents
+
+A published invoice includes the following sections:
+
+| Section | Description |
+|---------|-------------|
+| **Volume Summary** | Total packages processed and combined weight for the period |
+| **Balance Forward** | Outstanding amount carried over from the previous billing period |
+| **Discounts** | Any negotiated discounts applied to the subtotal |
+| **Itemized Package Breakdown** | Per-package fees with tracking numbers and weight tiers |
+| **Air Freight Charges** | Dimensional/actual weight calculations for air shipments |
+
+## Manual Adjustments
+
+Manual adjustments let you handle billing scenarios that fall outside the automated rate engine. Use them to:
+
+- Add a one-time surcharge for special handling
+- Credit a courier for a warehouse error
+- Bill for materials such as boxes, tape, or labels
+- Override a single package fee to honor a spot rate
+
+All adjustments appear as separate line items on the printed invoice so your courier partners can see exactly what was charged and why.
+
+## Printing & PDF
+
+To generate a print-ready invoice, open the published invoice and click **Print**. Shiipp Warehouse renders a formatted PDF with your warehouse branding, the courier's logo, and all invoice sections. Use your browser's print dialog to save as PDF or send directly to a printer.
+
+<Note>
+  Published invoices can be synced automatically to **Invoice Ninja**. When the integration is enabled, clicking **Publish** triggers an immediate push to Invoice Ninja and creates or updates the corresponding invoice in your accounting workspace. See [Invoice Ninja Integration](/integrations/invoice-ninja) for setup instructions.
+</Note>

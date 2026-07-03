@@ -1,0 +1,80 @@
+---
+title: 'Share Package Tracking with Your Customers'
+sidebarTitle: 'Tracking'
+description: "Give customers real-time visibility into their shipments with Shiipp Warehouse's public tracking portal — no login required."
+---
+
+Shiipp Warehouse includes a fully public tracking portal that your customers can access without creating an account or logging in. Every package you log immediately receives a live tracking page showing carrier information, milestone events, and timestamps. You share a single URL and your customers get end-to-end visibility from prealert through final delivery.
+
+## Tracking URL
+
+Each package's tracking page lives at a predictable path on your Shiipp Warehouse subdomain:
+
+```
+https://yourapp.com/track/{tracking_number}
+```
+
+Replace `{tracking_number}` with the carrier tracking number entered at intake. The URL is safe to embed directly in shipment confirmation emails, SMS notifications, or customer portals.
+
+<Tip>
+  Add the tracking URL template to your shipment notification email so every confirmation message automatically includes a clickable link to the live tracking page. Most email platforms support simple string substitution — insert the tracking number variable where `{tracking_number}` appears.
+</Tip>
+
+## Tracking Timeline
+
+When a customer opens a tracking page they see a clean, chronological timeline. Each milestone displays the event name, a timestamp, and any location or carrier note attached to it.
+
+<Accordion title="Standard milestone events">
+  | Milestone | Triggered when |
+  |-----------|---------------|
+  | **Received** | Package is logged in Shiipp Warehouse |
+  | **In Transit** | Status updated to in-transit by staff or webhook |
+  | **Arrived at Facility** | Package scanned at destination facility |
+  | **Out for Delivery** | Courier marks the package for last-mile delivery |
+  | **Delivered** | Final delivery confirmed |
+</Accordion>
+
+The carrier name and logo appear at the top of the timeline so customers immediately know which courier is handling their shipment.
+
+## Sharing a Tracking Link
+
+<Steps>
+  <Step title="Find the package in the Data Explorer">
+    Open **Packages** in the sidebar and use the search bar or filters to locate the package you want to share.
+  </Step>
+  <Step title="Copy the tracking number">
+    Click the tracking number in the table to copy it to your clipboard. The number is highlighted and a **Copy** confirmation appears briefly.
+  </Step>
+  <Step title="Build the tracking URL">
+    Append the tracking number to your base tracking URL:
+
+    ```
+    https://yourapp.com/track/1Z999AA10123456784
+    ```
+
+    Paste this URL into your customer communication channel — email, chat, or SMS.
+  </Step>
+</Steps>
+
+## Prealerts
+
+When a courier sends a prealert via webhook before the physical shipment arrives, Shiipp Warehouse creates the package record immediately. Customers can start tracking from the **Prealert** stage — they see a timeline event indicating the shipment has been announced and is en route to your facility.
+
+This gives customers early visibility and reduces inbound "where is my package?" inquiries during peak periods.
+
+<Note>
+  Prealerted packages appear in the **Prealerts** tab of the Packages view until physical receipt is confirmed. At that point, the package moves to the main list and the timeline updates with a **Received** event.
+</Note>
+
+## Status Exceptions
+
+If a carrier reports an exception — such as a customs hold, address issue, or damage — the tracking page displays an **Exception** banner above the timeline. The most recent exception message from the carrier is shown to the customer.
+
+To add a manual status note to the tracking page:
+
+1. Open the package in the Data Explorer.
+2. Click **Add Status Note** in the package detail panel.
+3. Type your note — for example, "Package held at customs. Expected clearance in 2–3 business days."
+4. Click **Save**. The note appears on the customer-facing tracking page immediately.
+
+Manual notes are clearly labeled as staff notes so customers understand they are warehouse-provided updates rather than carrier-scanned events.

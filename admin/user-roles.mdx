@@ -1,0 +1,77 @@
+---
+title: 'User Roles and Access Control in Shiipp Warehouse'
+sidebarTitle: 'User Roles'
+description: 'Manage who can access what in Shiipp Warehouse using role-based access control for admins, managers, and courier partners.'
+---
+
+Shiipp Warehouse uses role-based access control (RBAC) to ensure every team member and partner sees exactly what they need — nothing more, nothing less. Each user is assigned one of three roles at the point of invitation, and that role determines which modules, actions, and data are available to them throughout the platform.
+
+## Roles Overview
+
+Shiipp Warehouse provides three built-in roles. Each role is designed for a distinct set of responsibilities in the freight-forwarding workflow.
+
+**Admin** — Full access to every module in the platform. Admins can configure billing, manage couriers, adjust system settings, and invite or remove users. This role is intended for operations leads and IT administrators.
+
+**Manager** — Access to day-to-day package operations, manifests, reports, and courier data. Managers cannot access billing configuration or system-level settings. This role suits warehouse supervisors and operations staff who need broad operational visibility without platform administration rights.
+
+**Courier Partner** — A scoped, read-mostly role restricted to the partner's own courier record. Courier Partners can view and track their packages and configure webhook endpoints for their integration. They have no visibility into other couriers' data, billing, or platform settings.
+
+### Permission Comparison
+
+| Action                   | Admin | Manager | Courier Partner |
+|--------------------------|:-----:|:-------:|:---------------:|
+| View packages            | ✅    | ✅      | ✅ (own only)   |
+| Edit packages            | ✅    | ✅      | ❌              |
+| Manage couriers          | ✅    | ✅      | ❌              |
+| Generate invoices        | ✅    | ❌      | ❌              |
+| Manage users             | ✅    | ❌      | ❌              |
+| Access system settings   | ✅    | ❌      | ❌              |
+
+## Login Routing
+
+After a successful login, Shiipp Warehouse automatically routes each user to the view that matches their role:
+
+- **Warehouse staff and Managers** land on the scanning module, where they can immediately begin processing inbound packages or working through a manifest queue.
+- **Admins** are directed to the full executive dashboard, providing an at-a-glance view of platform KPIs, exception alerts, and courier distribution charts.
+- **Courier Partners** are taken directly to their courier-scoped package list, filtered to their own data by default.
+
+This routing removes friction for high-frequency workflows and ensures users aren't presented with controls they don't have permission to use.
+
+## Adding a User
+
+<Steps>
+  <Step title="Open the Users settings">
+    Navigate to **Settings → Users** in the left-hand navigation panel.
+  </Step>
+  <Step title="Start the invitation">
+    Click **Invite User** in the top-right corner of the Users table.
+  </Step>
+  <Step title="Enter details">
+    Type the new user's email address and select the appropriate role — **Admin**, **Manager**, or **Courier Partner** — from the role dropdown.
+  </Step>
+  <Step title="Send the invitation">
+    Click **Send Invitation**. The platform immediately dispatches an invitation email to the address you provided.
+  </Step>
+  <Step title="User completes setup">
+    The invited user receives an email containing a secure one-time link with full login instructions. They must complete their account setup, including 2FA enrollment, before their first session begins.
+  </Step>
+</Steps>
+
+## Two-Factor Authentication
+
+Two-factor authentication (2FA) is **enforced for all users** on the Shiipp Warehouse platform — it cannot be disabled at the account level. On their first login, every user is prompted to link an authenticator app before they can access any module.
+
+**Supported authenticator apps:**
+- Google Authenticator
+- Authy
+- Any TOTP-compatible app (RFC 6238)
+
+Once enrolled, users enter a six-digit time-based code on every subsequent login after entering their password. Sessions expire after a configurable idle timeout set in system settings.
+
+<Warning>
+  Admin accounts must always have 2FA active. Never share Admin credentials between team members — each administrator should have their own individual account to maintain a clear audit trail.
+</Warning>
+
+<Note>
+  Courier Partner users are provisioned automatically when you onboard a new courier through the platform. You do not need to invite them manually. See [Courier Management](/guides/courier-management) for the full onboarding walkthrough.
+</Note>

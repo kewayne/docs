@@ -1,0 +1,53 @@
+---
+title: 'Shiipp Warehouse Platform Concepts & Data Model'
+sidebarTitle: 'Platform Overview'
+description: 'Understand the core entities, data relationships, and multi-tenant architecture that power the Shiipp Warehouse logistics platform.'
+---
+
+The Shiipp Warehouse platform is built around four interconnected entities that mirror the real-world lifecycle of air-cargo freight forwarding. Every action you take — from scanning a package at intake to generating a customer invoice — flows through this shared data model. Understanding how these entities relate to one another gives you a clear mental map of the platform before you dive into any individual feature.
+
+## Core Entity Relationships
+
+The platform models freight forwarding as a pipeline. Each step produces data that the next step consumes, creating a traceable, auditable chain from the moment a package enters your warehouse to the moment your customer is billed.
+
+| Step | Entity | What Happens |
+|------|--------|-------------|
+| 1 | **Courier Partner** | A logistics carrier is onboarded with branding, AWB sequences, and API credentials |
+| 2 | **Package Intake** | Individual parcels are logged, weighed, and assigned to a courier partner |
+| 3 | **Flight Manifest** | Packages are grouped under a Master AWB for a specific outbound flight |
+| 4 | **Invoice / Billing** | Consolidated charges are calculated from manifest weights and courier rates |
+
+Reading top to bottom, the flow looks like this:
+
+1. You onboard a **Courier Partner** (e.g., AmeriJet, Caribbean Airlines) with its AWB prefix and branding.
+2. Packages arrive at your warehouse and are logged as **Package** records, each assigned to a courier.
+3. When a flight is ready, you create a **Flight Manifest** — a container that groups all packages traveling under the same Master AWB.
+4. Once the manifest is finalized, the billing engine generates an **Invoice** for the relevant shipper or end customer.
+
+## Multi-Tenant Architecture
+
+Shiipp Warehouse is a fully multi-tenant platform. Each organization operates in a completely isolated environment:
+
+- **Data isolation** — Package records, manifests, and invoices are scoped to your organization and are never visible to other tenants.
+- **User management** — You control which team members have access and at what permission level.
+- **Courier partners** — Each organization maintains its own set of courier integrations, AWB sequences, and API credentials. A courier onboarded in one workspace has no relationship to the same carrier in another workspace.
+- **Branding** — Tracking pages and printed documents reflect your organization's courier branding, not a shared Shiipp identity.
+
+This architecture means you can safely onboard multiple courier partners, manage high package volumes, and share API credentials with partners — all without any cross-tenant data leakage.
+
+## Explore the Core Concepts
+
+<CardGroup cols={2}>
+  <Card title="Packages" icon="box" href="/concepts/packages">
+    Learn how packages are tracked, weighed, and moved through lifecycle states from intake to delivery.
+  </Card>
+  <Card title="Couriers" icon="truck" href="/concepts/couriers">
+    Understand courier partner onboarding, AWB sequences, custom branding, and API credential management.
+  </Card>
+  <Card title="Manifests" icon="clipboard-list" href="/concepts/manifests">
+    See how flight manifests group packages under a Master AWB and aggregate weights for air cargo.
+  </Card>
+  <Card title="Billing & Invoices" icon="file-invoice-dollar" href="/guides/billing">
+    Explore how invoices are generated from manifest data and how charges flow to shippers.
+  </Card>
+</CardGroup>
