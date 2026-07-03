@@ -1,7 +1,7 @@
 ---
-title: 'User Roles and Access Control in Shiipp Warehouse'
+title: 'User Roles and Permissions in Shiipp Warehouse'
 sidebarTitle: 'User Roles'
-description: 'Manage who can access what in Shiipp Warehouse using role-based access control for admins, managers, and courier partners.'
+description: 'Manage team access in Shiipp Warehouse with role-based access control. Learn about Admin, Manager, and Courier Partner roles, invite flows, login routing, and 2FA enforcement.'
 ---
 
 Shiipp Warehouse uses role-based access control (RBAC) to ensure every team member and partner sees exactly what they need — nothing more, nothing less. Each user is assigned one of three roles at the point of invitation, and that role determines which modules, actions, and data are available to them throughout the platform.
@@ -10,9 +10,9 @@ Shiipp Warehouse uses role-based access control (RBAC) to ensure every team memb
 
 Shiipp Warehouse provides three built-in roles. Each role is designed for a distinct set of responsibilities in the freight-forwarding workflow.
 
-**Admin** — Full access to every module in the platform. Admins can configure billing, manage couriers, adjust system settings, and invite or remove users. This role is intended for operations leads and IT administrators.
+**Admin** — Full access to every module in the platform. Admins can configure billing, manage couriers, adjust system settings, and invite or remove users. This role is intended for operations leads and platform administrators.
 
-**Manager** — Access to day-to-day package operations, manifests, reports, and courier data. Managers cannot access billing configuration or system-level settings. This role suits warehouse supervisors and operations staff who need broad operational visibility without platform administration rights.
+**Manager** — Access to day-to-day package operations, manifests, and reports. Managers cannot access billing configuration or system-level settings. This role suits warehouse supervisors and operations staff who need broad operational visibility without platform administration rights.
 
 **Courier Partner** — A scoped, read-mostly role restricted to the partner's own courier record. Courier Partners can view and track their packages and configure webhook endpoints for their integration. They have no visibility into other couriers' data, billing, or platform settings.
 
@@ -22,16 +22,18 @@ Shiipp Warehouse provides three built-in roles. Each role is designed for a dist
 |--------------------------|:-----:|:-------:|:---------------:|
 | View packages            | ✅    | ✅      | ✅ (own only)   |
 | Edit packages            | ✅    | ✅      | ❌              |
-| Manage couriers          | ✅    | ✅      | ❌              |
-| Generate invoices        | ✅    | ❌      | ❌              |
+| View manifests & reports | ✅    | ✅      | ❌              |
+| Manage couriers          | ✅    | ❌      | ❌              |
+| Access billing config    | ✅    | ❌      | ❌              |
 | Manage users             | ✅    | ❌      | ❌              |
 | Access system settings   | ✅    | ❌      | ❌              |
+| Configure webhooks       | ✅    | ❌      | ✅ (own only)   |
 
 ## Login Routing
 
 After a successful login, Shiipp Warehouse automatically routes each user to the view that matches their role:
 
-- **Warehouse staff and Managers** land on the scanning module, where they can immediately begin processing inbound packages or working through a manifest queue.
+- **Warehouse staff** land on the scanning module, where they can immediately begin processing inbound packages or working through a manifest queue.
 - **Admins** are directed to the full executive dashboard, providing an at-a-glance view of platform KPIs, exception alerts, and courier distribution charts.
 - **Courier Partners** are taken directly to their courier-scoped package list, filtered to their own data by default.
 
@@ -66,7 +68,7 @@ Two-factor authentication (2FA) is **enforced for all users** on the Shiipp Ware
 - Authy
 - Any TOTP-compatible app (RFC 6238)
 
-Once enrolled, users enter a six-digit time-based code on every subsequent login after entering their password. Sessions expire after a configurable idle timeout set in system settings.
+Once enrolled, users enter a six-digit time-based one-time code on every subsequent login after entering their password. Sessions expire after a configurable idle timeout set in system settings.
 
 <Warning>
   Admin accounts must always have 2FA active. Never share Admin credentials between team members — each administrator should have their own individual account to maintain a clear audit trail.

@@ -117,3 +117,61 @@ A successful request returns HTTP `201 Created` along with the new webhook objec
 <Tip>
   The signing secret is used to verify webhook authenticity by validating the `X-Shiipp-Signature` header included with every delivery. To configure what data is included in webhook payloads for each event type, see the [Webhooks integration guide](/integrations/webhooks).
 </Tip>
+
+## Webhook Payload Variables
+
+Shiipp interpolates the following variables into webhook payload templates when delivering events. Use these placeholders in your payload template configuration:
+
+| Variable | Description |
+|----------|-------------|
+| `{{package_id}}` | Unique identifier of the package that triggered the event. |
+| `{{tracking}}` | Carrier tracking number of the package. |
+| `{{weight_lbs}}` | Package weight in pounds. |
+| `{{weight_kg}}` | Package weight in kilograms. |
+| `{{status}}` | Current package status at the time of the event. |
+| `{{courier}}` | Display name of the courier partner. |
+| `{{customer_name}}` | Full name of the package recipient. |
+
+## Error Responses
+
+<CodeGroup>
+```json 401 Unauthorized
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid or missing API key"
+  }
+}
+```
+
+```json 403 Forbidden
+{
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Your API key does not have permission to access this resource"
+  }
+}
+```
+
+```json 404 Not Found
+{
+  "success": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "No courier found with the provided ID"
+  }
+}
+```
+
+```json 422 Unprocessable Entity
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "The url field must be a valid HTTPS URL. Plain HTTP endpoints are not accepted."
+  }
+}
+```
+</CodeGroup>

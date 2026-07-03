@@ -1,7 +1,7 @@
 ---
-title: 'Share Package Tracking with Your Customers'
+title: 'Share Real-Time Package Tracking with Your Customers'
 sidebarTitle: 'Tracking'
-description: "Give customers real-time visibility into their shipments with Shiipp Warehouse's public tracking portal — no login required."
+description: "Give customers real-time shipment visibility with Shiipp Warehouse's public tracking portal — no login needed, shareable via a single tracking URL."
 ---
 
 Shiipp Warehouse includes a fully public tracking portal that your customers can access without creating an account or logging in. Every package you log immediately receives a live tracking page showing carrier information, milestone events, and timestamps. You share a single URL and your customers get end-to-end visibility from prealert through final delivery.
@@ -10,7 +10,7 @@ Shiipp Warehouse includes a fully public tracking portal that your customers can
 
 Each package's tracking page lives at a predictable path on your Shiipp Warehouse subdomain:
 
-```
+```text
 https://yourapp.com/track/{tracking_number}
 ```
 
@@ -48,7 +48,7 @@ The carrier name and logo appear at the top of the timeline so customers immedia
   <Step title="Build the tracking URL">
     Append the tracking number to your base tracking URL:
 
-    ```
+    ```text
     https://yourapp.com/track/1Z999AA10123456784
     ```
 

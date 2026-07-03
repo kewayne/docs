@@ -1,5 +1,5 @@
 ---
-title: 'Flight Manifests: Grouping Packages for Air Cargo'
+title: 'Flight Manifests: Master AWB Grouping and Aggregation'
 sidebarTitle: 'Manifests'
 description: 'Learn how Shiipp Warehouse flight manifests consolidate packages under a Master AWB, auto-detect airlines, and aggregate weight for air cargo shipments.'
 ---
@@ -40,7 +40,7 @@ As you add packages to a manifest, Shiipp Warehouse recalculates the manifest's 
 - **Total Weight (LBS)** — The sum of all package weights in pounds.
 - **Total Weight (KG)** — The sum of all package weights in kilograms.
 
-These aggregated figures are displayed prominently on the manifest summary card and are included in all manifest exports. Because both weight units are stored on each package record (see [Dual Weight System](/concepts/packages#dual-weight-system)), aggregation is a direct database sum — no conversion is applied at manifest time, eliminating rounding drift across large shipments.
+These aggregated figures are displayed prominently on the manifest summary card and are included in all manifest exports. Because both weight units are stored on each package record (see [Dual Weight System](/concepts/packages#dual-weight-system)), aggregation is a direct sum — no conversion is applied at manifest time, eliminating rounding drift across large shipments.
 
 ## Manifest Workflow
 

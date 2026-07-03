@@ -14,15 +14,17 @@ This guide walks you through everything you need to go from a blank workspace to
 
 <Steps>
   <Step title="Log in to your account">
-    Open your Shiipp Warehouse URL and enter your **email address** and **password**. If your administrator has enforced 2FA (recommended), you'll be prompted for a 6-digit code from your authenticator app immediately after your password is accepted.
+    Open your Shiipp Warehouse URL. You can sign in with either your **email address** or your **Operator ID** — a numeric identifier assigned by your administrator, useful for shared operator accounts not tied to a personal email.
 
-    ```
-    Email:    you@yourcompany.com
-    Password: ••••••••••••
-    2FA Code: 482 917
+    Enter your password. If 2FA is enabled on your account (recommended), you'll be prompted for a 6-digit code from your authenticator app immediately after:
+
+    ```text
+    Email or Operator ID:  you@yourcompany.com
+    Password:              ••••••••••••
+    2FA Code:              482 917
     ```
 
-    After a successful login, you land on the main dashboard for your company workspace.
+    After a successful login, you are routed to the section of the platform that matches your role — admins land on the full company dashboard, while warehouse staff are taken directly to the package scanning module.
   </Step>
 
   <Step title="Complete your company profile">
@@ -41,34 +43,41 @@ This guide walks you through everything you need to go from a blank workspace to
 
     | Field | Description |
     |---|---|
-    | **Name** | The courier's display name (e.g., "FastShip Express") |
-    | **Prefix** | A short code prepended to package tracking numbers (e.g., `FSE`) |
-    | **Logo / Branding** | Upload the courier's logo for their portal and tracking pages |
+    | **Display Name** | The courier's name as it appears on tracking pages and invoices (e.g., `FastShip Express`) |
+    | **Branding** | Upload the courier's logo and set a hex colour for their profile |
+    | **Master AWB Prefix** | The prefix used for Master AWB sequence generation (e.g., `810` for AmeriJet) |
+    | **House AWB Prefix** | The prefix used for individual House AWB numbers |
     | **Contact details** | Email and phone number for operational queries |
 
-    Click **Save Courier**. The courier now appears in your courier list and is ready to receive packages and API keys.
+    Click **Save Courier**. The courier is immediately added to your list, API credentials are provisioned automatically, and the courier is ready to receive packages.
   </Step>
 
   <Step title="Receive your first package">
     Go to **Packages → New Package** and enter the shipment details:
 
-    - **Tracking number** — assigned by you or auto-generated with the courier prefix (e.g., `FSE-00001`).
-    - **Weight** — in kilograms; used for billing calculations.
+    - **Tracking number** — assigned by you or auto-generated using the courier's AWB prefix.
+    - **Weight** — enter in either **LBS or KG**; the platform converts between the two automatically.
     - **Customer name and contact** — the recipient's details, shown on their tracking page.
     - **Courier** — select the partner you just created.
     - **Status** — set to `Received` to mark the package as in your warehouse.
 
-    Click **Save Package**. The package is now live in your system with a full audit trail.
+    Click **Save Package**. The package is now live in your system with a full audit trail and an auto-generated public tracking link.
   </Step>
 
   <Step title="Share the tracking link with your customer">
     Every package gets a public tracking URL the moment it's created. Find the package in your dashboard, open its detail view, and copy the tracking link:
 
-    ```
+    ```text
     https://yourapp.com/track/{tracking_number}
     ```
 
     Share this link with your customer via email, SMS, or your customer portal. The page updates automatically whenever the package status changes — no login required for the recipient.
+
+    You can also retrieve tracking data programmatically using the public API endpoint (no authentication required):
+
+    ```bash
+    curl https://yourapp.com/api/track/FSE-00001
+    ```
   </Step>
 </Steps>
 

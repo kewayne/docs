@@ -1,21 +1,21 @@
 ---
-title: 'System Settings and Platform Configuration'
+title: 'System Settings and Platform Configuration in Shiipp'
 sidebarTitle: 'System Settings'
 description: 'Configure global platform behaviour in Shiipp Warehouse, including billing rates, exception thresholds, dashboard KPIs, and export defaults.'
 ---
 
-System Settings is the central control panel for your Shiipp Warehouse installation. Changes made here apply platform-wide and affect every user, courier, and integration connected to your account. Only users with the **Admin** role can access or modify these settings.
+System Settings is the central control panel for your Shiipp Warehouse account. Changes made here apply platform-wide and affect every user, courier, and integration connected to your account. Only users with the **Admin** role can access or modify these settings.
 
 ## General Settings
 
 The General Settings section controls the core identity and locale of your platform instance.
 
-| Setting           | Description                                                                 |
-|-------------------|-----------------------------------------------------------------------------|
-| **Company Name**  | Displayed in the platform header, exported reports, and customer-facing emails. |
+| Setting              | Description                                                                                      |
+|----------------------|--------------------------------------------------------------------------------------------------|
+| **Company Name**     | Displayed in the platform header, exported reports, and customer-facing emails.                  |
 | **Default Currency** | The currency used across invoices, billing summaries, and rate cards when no courier-specific currency is configured. |
-| **Timezone**      | Determines how timestamps are displayed throughout the UI and in exported files. |
-| **Language**      | Sets the UI language for all users. Individual users cannot override this setting. |
+| **Timezone**         | Determines how timestamps are displayed throughout the UI and in exported files.                 |
+| **Language**         | Sets the UI language for all users. Individual users cannot override this setting.               |
 
 ## Billing Configuration
 
@@ -28,19 +28,19 @@ The Billing Configuration section lets you define the global rate fallbacks that
 **Surcharge Types** — Configure the list of surcharge categories available when staff make manual billing adjustments on a package. Add, rename, or deactivate surcharge types to match your operational billing taxonomy (e.g., Fuel Surcharge, Oversize, Remote Delivery).
 
 <Tip>
-  Set your global default rates first before configuring individual couriers. Courier-specific overrides will take precedence over these global values, so the defaults only apply where no courier-level rate exists. Configure courier-specific pricing in each courier's own settings page.
+  Set your global default rates first before configuring individual couriers. Courier-specific overrides take precedence over these global values, so the defaults only apply where no courier-level rate exists. Configure courier-specific pricing in each courier's own settings page.
 </Tip>
 
 ## Exception Alerts
 
 Exception Alerts determine when the colored badge indicators appear on your dashboard navigation items, signalling that items require attention.
 
-| Alert Type            | Description                                                                          |
-|-----------------------|--------------------------------------------------------------------------------------|
+| Alert Type            | Description                                                                                                             |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------------|
 | **Unknown Packages**  | Packages received with a tracking number that doesn't match any prealert. Set the minimum count before the badge appears. |
-| **Pending Claims**    | Open damage or loss claims awaiting resolution. Set a threshold (e.g., show badge when count > 0). |
-| **Name Mismatches**   | Packages where the declared recipient name doesn't match the courier's manifest data. |
-| **Failed API Syncs**  | Courier API sync attempts that returned an error within the last 24 hours.            |
+| **Pending Claims**    | Open damage or loss claims awaiting resolution. Set a threshold (e.g., show badge when count > 0).                      |
+| **Name Mismatches**   | Packages where the declared recipient name doesn't match the courier's manifest data.                                   |
+| **Failed API Syncs**  | Courier API sync attempts that returned an error within the last 24 hours.                                              |
 
 Adjust each threshold to reflect your team's operational tolerance. Setting a threshold to **0** means any single occurrence triggers the badge immediately.
 
@@ -70,5 +70,5 @@ Set the default file format used when a user triggers a package export from any 
 Users can override the default format at the point of export without changing this setting.
 
 <Note>
-  All system settings changes take effect immediately across the platform. No restart or deployment is required. Users currently logged in will see the updated behaviour on their next page load or action.
+  All system settings changes take effect immediately across the platform. Users currently logged in will see the updated behaviour on their next page load or action.
 </Note>

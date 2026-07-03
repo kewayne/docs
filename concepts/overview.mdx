@@ -1,7 +1,7 @@
 ---
-title: 'Shiipp Warehouse Platform Concepts & Data Model'
+title: 'Shiipp Warehouse: Core Concepts and Platform Overview'
 sidebarTitle: 'Platform Overview'
-description: 'Understand the core entities, data relationships, and multi-tenant architecture that power the Shiipp Warehouse logistics platform.'
+description: 'Understand the core entities, user roles, data relationships, and multi-tenant architecture that power the Shiipp Warehouse logistics platform.'
 ---
 
 The Shiipp Warehouse platform is built around four interconnected entities that mirror the real-world lifecycle of air-cargo freight forwarding. Every action you take — from scanning a package at intake to generating a customer invoice — flows through this shared data model. Understanding how these entities relate to one another gives you a clear mental map of the platform before you dive into any individual feature.
@@ -23,6 +23,36 @@ Reading top to bottom, the flow looks like this:
 2. Packages arrive at your warehouse and are logged as **Package** records, each assigned to a courier.
 3. When a flight is ready, you create a **Flight Manifest** — a container that groups all packages traveling under the same Master AWB.
 4. Once the manifest is finalized, the billing engine generates an **Invoice** for the relevant shipper or end customer.
+
+## User Roles
+
+Shiipp Warehouse uses role-based access control to ensure every team member sees exactly what they need — nothing more, nothing less. There are three built-in roles:
+
+<CardGroup cols={3}>
+  <Card title="Admin" icon="shield-halved">
+    Full access to all platform features: packages, manifests, couriers, billing, settings, and worker management.
+  </Card>
+  <Card title="Manager" icon="clipboard-check">
+    Access to packages, manifests, and reports. Cannot modify courier configurations, billing settings, or system-level controls.
+  </Card>
+  <Card title="Courier Partner" icon="truck">
+    Scoped access to packages assigned to their own courier account and webhook event subscriptions only. Cannot view other couriers' data.
+  </Card>
+</CardGroup>
+
+Role assignment is managed from the **Settings → Users** panel. After login, the platform automatically routes each user to the appropriate interface — warehouse staff land on the scanning module, while admins and managers are directed to the full dashboard.
+
+## Billing Lifecycle
+
+Invoices in Shiipp Warehouse move through a defined lifecycle, giving you full control over when charges are visible and when they are settled:
+
+| State | Description |
+|-------|-------------|
+| **Draft** | The invoice has been generated but not yet reviewed. Line items can still be adjusted, and surcharges can be added. |
+| **Published** | The invoice has been finalized and sent to the customer. No further edits are permitted. |
+| **Paid** | Payment has been confirmed and the invoice is closed. |
+
+Draft invoices support manual adjustments such as surcharges and discounts before they are published. Once published, invoices can be exported as printable PDF documents and synced to Invoice Ninja for accounting workflows.
 
 ## Multi-Tenant Architecture
 

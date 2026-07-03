@@ -1,7 +1,7 @@
 ---
-title: 'Monitor and Manage Background Dispatch Workers'
+title: 'Monitor and Manage Background Workers in Shiipp'
 sidebarTitle: 'Background Workers'
-description: 'Monitor, start, stop, and troubleshoot the background dispatch workers that power async tasks in Shiipp Warehouse.'
+description: 'Monitor, start, stop, and troubleshoot the shiipp-wh-worker daemon that powers async webhook delivery, invoice sync, prealert processing, and status dispatch.'
 ---
 
 Background workers are the engine behind Shiipp Warehouse's asynchronous operations. Rather than making users wait for network calls, file processing, or third-party sync operations to complete, the platform delegates these tasks to persistent daemon processes that run continuously in the background. Understanding how to monitor and manage these workers is essential for maintaining a healthy, fully operational warehouse environment.
@@ -30,7 +30,7 @@ The core background process in Shiipp Warehouse is the **`shiipp-wh-worker`** da
 Access the worker monitoring interface by navigating to **System → Workers** in the left-hand navigation panel. The dashboard displays a table of all registered workers with their current status.
 
 | Status Indicator | Meaning |
-|------------------|---------|
+|------------------|---------| 
 | 🟢 **Running**   | The worker process is active and processing its task queue normally. |
 | 🔴 **Stopped**   | The worker is not running. Tasks assigned to this worker are queued but not being processed. |
 | 🟠 **Error**     | The worker encountered a fatal exception and terminated. Review the `.err` log stream to diagnose the cause. |
@@ -75,13 +75,13 @@ Logs are displayed in a terminal-style interface with real-time streaming update
 
 <AccordionGroup>
   <Accordion title="Worker shows 'Stopped' unexpectedly">
-    A worker that stops without a manual action has almost certainly crashed due to an unhandled exception. Open the **`.err`** log stream for the worker and look for the most recent stack trace or fatal error message. Common causes include database connectivity loss, misconfigured environment variables, and out-of-memory conditions. Resolve the underlying cause before restarting the worker to prevent an immediate recurrence.
+    A worker that stops without a manual action has crashed due to an unhandled error. Open the **`.err`** log stream for the worker and look for the most recent error message or stack trace. Resolve the underlying issue indicated in the log before restarting the worker to prevent an immediate recurrence. If you are unable to identify the cause, contact [Shiipp support](mailto:support@shiipp.com) with the relevant log excerpt.
   </Accordion>
   <Accordion title="Webhooks not delivering">
-    First, confirm that the **`shiipp-wh-worker`** is in **Running** status with a recent heartbeat. If the worker is running, check the **Failed Webhook Count** badge on the courier's webhook configuration panel — a high count suggests the destination endpoint is rejecting or timing out requests. Review the endpoint URL, authentication headers, and firewall rules on the receiving server.
+    First, confirm that **`shiipp-wh-worker`** is in **Running** status with a recent heartbeat. If the worker is running, check the **Failed Webhook Count** badge on the courier's webhook configuration panel — a high count suggests the destination endpoint is rejecting or timing out requests. Review the endpoint URL and authentication headers configured in the courier's webhook settings.
   </Accordion>
-  <Accordion title="High memory usage">
-    If the worker's memory metric in the Status Dashboard climbs steadily over time without returning to baseline, the process is likely experiencing a memory leak in a long-running task cycle. Perform a **Restart** to reclaim memory immediately. If the memory growth resumes within a short period after restart, capture the `.err` log and contact Shiipp support with the log excerpt and the approximate time the growth began.
+  <Accordion title="Worker memory usage climbing steadily">
+    If the worker's memory metric in the Status Dashboard climbs steadily over time without returning to baseline, perform a **Restart** to reclaim memory immediately. If the growth resumes shortly after restart, capture the `.err` log and contact [Shiipp support](mailto:support@shiipp.com) with the log excerpt and the approximate time the growth began.
   </Accordion>
 </AccordionGroup>
 

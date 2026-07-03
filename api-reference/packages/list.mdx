@@ -1,7 +1,7 @@
 ---
-title: 'GET /api/packages — List and Filter Packages'
+title: 'GET /api/packages — List, Search, and Filter Packages'
 sidebarTitle: 'List Packages'
-description: 'Retrieve a paginated list of packages in your warehouse. Filter by status, courier, tracking number, or intake date range.'
+description: 'Retrieve a paginated list of warehouse packages. Filter results by status, courier partner, tracking number substring, or intake date range.'
 ---
 
 Use this endpoint to query all package records associated with your warehouse account. You can narrow results with filters for shipment status, courier partner, tracking number substring, or a date range based on when packages were first logged. Responses are paginated and sorted by creation date descending.
@@ -130,3 +130,37 @@ curl --request GET \
 <Note>
   For large data exports, use the **dashboard export feature** instead of paginating through the API. The dashboard supports CSV, XLSX, and JSON export formats and handles datasets of any size.
 </Note>
+
+## Error Responses
+
+<CodeGroup>
+```json 401 Unauthorized
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid or missing API key"
+  }
+}
+```
+
+```json 403 Forbidden
+{
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Your API key does not have permission to access this resource"
+  }
+}
+```
+
+```json 404 Not Found
+{
+  "success": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "The requested resource does not exist"
+  }
+}
+```
+</CodeGroup>

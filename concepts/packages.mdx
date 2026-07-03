@@ -1,10 +1,21 @@
 ---
-title: 'Packages: Tracking, Weight, and Lifecycle States'
+title: 'Packages: Data Explorer, Weight, and Lifecycle States'
 sidebarTitle: 'Packages'
 description: 'Everything you need to know about package records — fields, weight conversion, lifecycle states, inline editing, and data export in Shiipp Warehouse.'
 ---
 
 Packages are the atomic unit of the Shiipp Warehouse platform. Every parcel that passes through your warehouse becomes a package record, carrying all the information needed to track its journey, assign it to a courier, group it into a manifest, and ultimately bill the customer. This page covers the full package data model, the states a package moves through, and the tools available for managing package data at scale.
+
+## The Data Explorer
+
+Shiipp Warehouse includes a **Stripe-inspired data explorer** as the primary interface for browsing, searching, filtering, and editing package records. Rather than navigating to individual detail pages for every operation, the data explorer lets you work directly in a rich table view — applying filters, editing cells inline, and exporting results — all without leaving the page.
+
+The explorer supports:
+
+- **Full-text and field-level filtering** — Narrow results by courier, status, date range, customer name, or tracking number.
+- **Column sorting** — Click any column header to sort ascending or descending.
+- **Inline editing** — Modify package fields directly in the table. See [Inline Editing](#inline-editing) below.
+- **Bulk export** — Download the current filtered view in CSV, XLSX, or JSON. See [Export](#export) below.
 
 ## Package Fields
 
@@ -36,7 +47,7 @@ A package moves through a defined set of states as it progresses from intake to 
 <Tip>
   Customers can self-serve their package status at any time using the public tracking portal. Share the direct URL using the format:
 
-  ```
+  ```text
   https://your-domain.com/track/{tracking_number}
   ```
 
@@ -78,13 +89,13 @@ You can export any filtered view of package data in three formats:
   <Tab title="CSV">
     Export a comma-separated file compatible with Excel, Google Sheets, and most data tools. All currently visible columns and active filters are respected — only the packages shown in your current view are included in the export.
 
-    ```
+    ```csv
     tracking_number,weight_lbs,weight_kg,shipper,description,customer_name,courier,status
     PKG-001,12.5,5.67,Acme Corp,Electronics,Jane Doe,AmeriJet,In Transit
     ```
   </Tab>
   <Tab title="XLSX">
-    Export a native Excel workbook with column headers and formatted cells. Ideal for sharing reports with clients or internal teams who work primarily in spreadsheet tools.
+    Export a native Excel workbook with column headers and formatted cells. Ideal for sharing reports with clients or teams who work primarily in spreadsheet tools.
   </Tab>
   <Tab title="JSON">
     Export a structured JSON array of package objects. Useful for programmatic processing, migrating data to external systems, or feeding into custom reporting pipelines.

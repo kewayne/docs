@@ -28,12 +28,12 @@ To enable 2FA, go to **Settings → Security → Two-Factor Authentication** and
 
 After a successful login, Shiipp Warehouse routes you to the correct section of the platform based on your assigned role:
 
-| Role | Default landing page |
-|---|---|
-| **Admin** | Company dashboard (full access) |
-| **Warehouse Staff** | Package intake queue |
-| **Courier Manager** | Courier-specific package list |
-| **Billing** | Invoices and reports |
+| Role | Default landing page | Access level |
+|---|---|---|
+| **Admin** | Company dashboard | Full platform access |
+| **Manager** | Package and manifest dashboard | Packages, manifests, and reports |
+| **Warehouse Staff** | Package scanning module | Package intake and scanning only |
+| **Courier Partner** | Courier package list | Own packages and webhooks only |
 
 Your administrator assigns roles under **Settings → Users**.
 
@@ -43,12 +43,16 @@ Your administrator assigns roles under **Settings → Users**.
 
 All API requests to Shiipp Warehouse must include a valid API key in the `X-API-KEY` request header. There is no session-based authentication for the API — every request is independently authenticated.
 
+<Note>
+  The public tracking endpoint `GET /api/track/{tracking_number}` does **not** require an API key. All other API endpoints require a valid `X-API-KEY` header.
+</Note>
+
 ### Getting an API Key
 
-API keys are scoped per courier partner. To generate one:
+API keys are scoped per courier partner and are provisioned automatically when a courier is onboarded. You can also generate or rotate keys manually at any time:
 
 1. Go to **Couriers** in the left sidebar.
-2. Select the courier you want to generate a key for.
+2. Select the courier you want to manage a key for.
 3. Open the **Settings** tab within the courier detail view.
 4. Click **API Keys → Generate New Key**.
 5. Copy the key immediately — it is only shown once in full at generation time.
@@ -62,17 +66,31 @@ API keys are scoped per courier partner. To generate one:
 Pass your API key in the `X-API-KEY` header on every request:
 
 ```bash
-curl -X GET https://yourapp.com/api/packages \
-  -H 'X-API-KEY: your_api_key_here' \
-  -H 'Content-Type: application/json'
+curl -X GET "https://yourapp.com/api/packages" \
+  -H "X-API-KEY: your_api_key_here" \
+  -H "Content-Type: application/json"
 ```
 
-You can also retrieve a single package by tracking number:
+To create a new package intake record:
 
 ```bash
-curl -X GET https://yourapp.com/api/packages/FSE-00001 \
-  -H 'X-API-KEY: your_api_key_here' \
-  -H 'Content-Type: application/json'
+curl -X POST "https://yourapp.com/api/packages" \
+  -H "X-API-KEY: your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tracking_number": "FSE-00001",
+    "weight_lbs": 4.4,
+    "weight_kg": 2.0,
+    "customer_name": "Jane Smith",
+    "courier_id": "courier_abc123",
+    "status": "received"
+  }'
+```
+
+To look up a package by tracking number (no API key required):
+
+```bash
+curl "https://yourapp.com/api/track/FSE-00001"
 ```
 
 <Tip>
@@ -96,6 +114,44 @@ Rotate API keys regularly, or immediately after a suspected exposure. You can ro
     Return to **API Keys**, find the old key in the list, and click **Revoke**. Revocation is immediate and permanent — any request still using the old key will receive a `401 Unauthorized` response.
   </Step>
 </Steps>
+
+---
+
+## Webhook Authentication
+
+Webhook payloads sent by Shiipp Warehouse to your endpoints are signed with **AES-256 encryption**. Use the signing secret displayed in your webhook configuration to verify that incoming payloads originate from Shiipp Warehouse and have not been tampered with.
+
+Webhook events you can subscribe to:
+
+| Event | Description |
+|---|---|
+| `customer_sync` | A customer record has been created or updated |
+| `package_intake` | A new package has been received into the warehouse |
+| `status_update` | A package status has changed |
+
+Each payload is templated using the variables below:
+
+| Variable | Description |
+|---|---|
+| `{{package_id}}` | Unique internal package identifier |
+| `{{tracking}}` | Customer-facing tracking number |
+| `{{weight_lbs}}` | Package weight in pounds |
+| `{{weight_kg}}` | Package weight in kilograms |
+| `{{status}}` | Current package status |
+| `{{courier}}` | Courier partner name |
+| `{{customer_name}}` | Recipient's name |
+
+To register a webhook endpoint for a courier:
+
+```bash
+curl -X POST "https://yourapp.com/api/couriers/{id}/webhooks" \
+  -H "X-API-KEY: your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://yourservice.com/hooks/shiipp",
+    "events": ["package_intake", "status_update"]
+  }'
+```
 
 ---
 

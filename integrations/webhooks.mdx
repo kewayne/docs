@@ -1,7 +1,7 @@
 ---
-title: 'Webhooks: Real-Time Package and Status Sync'
+title: 'Webhooks: Real-Time Event Delivery for Courier Partners'
 sidebarTitle: 'Webhooks'
-description: 'Set up and manage webhooks in Shiipp Warehouse to push real-time package and status events to your external systems.'
+description: 'Set up webhooks in Shiipp Warehouse to receive real-time package, status, and customer events with AES-256 encryption and signature verification.'
 ---
 
 Webhooks let you push real-time event data from Shiipp Warehouse directly to any external endpoint the moment something changes — a new package arrives, a customer record updates, or a shipment status flips. Instead of polling the API, your systems receive instant, structured payloads so your fulfillment workflows, ERPs, and customer-facing portals stay in sync without delay.
@@ -140,12 +140,12 @@ function verifySignature(rawBody, secret, header) {
 
 ## Retries and Failures
 
-If your endpoint returns a non-`200` status code or does not respond in time, Shiipp Warehouse marks the delivery as failed and automatically retries with exponential back-off. Failed deliveries surface as **Failed Webhook** alerts on the executive dashboard so your team can investigate without digging through logs.
+If your endpoint returns a non-`200` status code or does not respond in time, Shiipp Warehouse marks the delivery as failed and automatically retries with exponential back-off. Failed deliveries surface as **Failed Webhook** alert badges on your Shiipp Warehouse dashboard so your team can investigate without digging through logs.
 
 <Warning>
   Webhook endpoints must respond with **HTTP 200** within **30 seconds** or the delivery is marked as failed. Perform any long-running processing asynchronously — acknowledge receipt immediately, then handle the payload in a background job.
 </Warning>
 
 <Info>
-  The executive dashboard shows the full delivery history for each webhook, including response codes, latency, and retry attempts. Use this view to diagnose intermittent failures before they affect your workflow.
+  The Shiipp Warehouse dashboard shows the full delivery history for each webhook, including response codes, latency, and retry attempts. Use this view to diagnose intermittent failures before they affect your workflow.
 </Info>

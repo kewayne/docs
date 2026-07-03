@@ -1,7 +1,7 @@
 ---
-title: 'GET /api/couriers — List Courier Partners'
+title: 'GET /api/couriers — List Courier Partners in Shiipp'
 sidebarTitle: 'List Couriers'
-description: 'Retrieve all courier partners configured in your Shiipp account, including branding details and active status for each partner.'
+description: 'Retrieve all courier partners configured in your Shiipp account. Includes branding details, AWB prefixes, logo URLs, and active status for each courier.'
 ---
 
 Use this endpoint to fetch all courier partners associated with your Shiipp workspace. The response includes each courier's display name, AWB prefix, brand color, logo URL, and active status. This data is useful when building package intake forms, populating dropdowns, or validating `courier_id` values before submitting a `POST /api/packages` request.
@@ -102,3 +102,27 @@ curl --request GET \
   "meta": { "total": 12, "page": 1, "per_page": 25 }
 }
 ```
+
+## Error Responses
+
+<CodeGroup>
+```json 401 Unauthorized
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid or missing API key"
+  }
+}
+```
+
+```json 403 Forbidden
+{
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Your API key does not have permission to access this resource"
+  }
+}
+```
+</CodeGroup>

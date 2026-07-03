@@ -1,7 +1,7 @@
 ---
-title: 'Shiipp Warehouse REST API Reference Overview'
+title: 'Shiipp Warehouse REST API — Complete Reference Guide'
 sidebarTitle: 'Overview'
-description: 'Explore the Shiipp Warehouse REST API to integrate package management, tracking, and courier operations into your own systems.'
+description: 'Explore the Shiipp Warehouse REST API to manage packages, track shipments, configure couriers, and automate logistics workflows in your own systems.'
 ---
 
 Shiipp Warehouse exposes a REST API that lets you integrate package management, tracking, and courier operations into your own systems. Whether you're building a custom dashboard, automating shipment workflows, or syncing data with a third-party platform, every capability available in the Shiipp interface is accessible programmatically through this API.
@@ -48,7 +48,7 @@ curl "https://yourapp.com/api/packages?status=pending&page=2" \
 curl -X POST https://yourapp.com/api/packages \
   -H 'X-API-KEY: sk_live_your_key_here' \
   -H 'Content-Type: application/json' \
-  -d '{"tracking_number": "SHP123456", "courier_id": "c_abc"}'
+  -d '{"tracking": "SHP123456", "courier_id": "c_abc", "customer_name": "Jane Smith"}'
 ```
 
 ---
@@ -136,6 +136,7 @@ The API uses standard HTTP status codes to indicate the outcome of each request.
 | `403` | **Forbidden** — insufficient permissions for the requested resource. |
 | `404` | **Not Found** — the requested resource does not exist. |
 | `422` | **Unprocessable Entity** — the request was well-formed but failed validation. |
+| `429` | **Too Many Requests** — you have exceeded the rate limit for your API key. |
 | `500` | **Internal Server Error** — an unexpected error occurred on the server. |
 
 ---

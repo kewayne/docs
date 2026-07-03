@@ -1,7 +1,7 @@
 ---
-title: 'PUT /api/packages/{id} — Update Package Details'
+title: 'PUT /api/packages/{id} — Partial Update Package Record'
 sidebarTitle: 'Update Package'
-description: 'Modify an existing package record in Shiipp. Send only the fields you want to change — all other fields remain unchanged.'
+description: 'Partially update an existing package record in Shiipp. Send only the fields you want to change — all omitted fields remain unchanged.'
 ---
 
 Use this endpoint to update one or more fields on an existing package record. The request body accepts a partial object — you only need to include the fields you want to change. Omitted fields remain exactly as they were. This makes it straightforward to update a single attribute, such as advancing a status or correcting a weight, without re-sending the entire record.
@@ -126,3 +126,47 @@ A successful request returns HTTP `200 OK` along with the full updated package o
 <Note>
   Weight fields are always kept in sync automatically. If you update `weight_lbs`, the system recalculates and overwrites `weight_kg`, and vice versa. Avoid sending both weight fields in the same request unless they represent consistent values — a mismatch will return a `422` validation error.
 </Note>
+
+## Error Responses
+
+<CodeGroup>
+```json 401 Unauthorized
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid or missing API key"
+  }
+}
+```
+
+```json 403 Forbidden
+{
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Your API key does not have permission to access this resource"
+  }
+}
+```
+
+```json 404 Not Found
+{
+  "success": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "No package found with the provided ID"
+  }
+}
+```
+
+```json 422 Unprocessable Entity
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "The provided status value is not valid. Accepted values: pending, in_transit, arrived, delivered, exception"
+  }
+}
+```
+</CodeGroup>

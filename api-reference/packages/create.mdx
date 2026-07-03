@@ -1,7 +1,7 @@
 ---
-title: 'POST /api/packages — Create a Package Record'
+title: 'POST /api/packages — Create a New Package Intake Record'
 sidebarTitle: 'Create Package'
-description: 'Log a new package into the Shiipp warehouse system. Provide tracking details, courier assignment, and weight to create a record.'
+description: 'Log a new package intake into the Shiipp warehouse system. Provide the tracking number, courier assignment, recipient name, and optional weight.'
 ---
 
 Use this endpoint to register a new package in your warehouse. You must supply a carrier tracking number, a valid courier partner ID, and the recipient's name. Weight is optional but strongly recommended — you may provide it in either pounds or kilograms, and Shiipp will automatically calculate and store the converted value. Newly created packages are assigned a `pending` status.
@@ -130,3 +130,37 @@ A successful request returns HTTP `201 Created` along with the full package obje
 <Note>
   You only need to provide one weight field — Shiipp automatically converts between `weight_lbs` and `weight_kg` and stores both values. If you provide both, the values must be consistent; a mismatch will return a `422` validation error.
 </Note>
+
+## Error Responses
+
+<CodeGroup>
+```json 401 Unauthorized
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid or missing API key"
+  }
+}
+```
+
+```json 403 Forbidden
+{
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Your API key does not have permission to access this resource"
+  }
+}
+```
+
+```json 422 Unprocessable Entity
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "The tracking number is already in use by another package in your account"
+  }
+}
+```
+</CodeGroup>

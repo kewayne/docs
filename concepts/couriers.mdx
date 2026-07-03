@@ -1,5 +1,5 @@
 ---
-title: 'Courier Partners: Branding, AWB, and Credentials'
+title: 'Courier Partners: Branding, AWB Sequences, and Webhooks'
 sidebarTitle: 'Couriers'
 description: 'Learn how to onboard courier partners in Shiipp Warehouse, configure AWB sequences, set custom branding, and manage API credentials for integrations.'
 ---
@@ -13,7 +13,7 @@ A **courier partner** is a logistics company that has been integrated into your 
 - Assigned to individual packages as the responsible carrier
 - Used as the basis for AWB number generation on flight manifests
 - Displayed with its own logo, name, and brand color on tracking pages and invoices
-- Connected to external systems via API keys and webhook credentials
+- Connected to external systems via API keys and outbound webhooks
 
 Each organization manages its own roster of courier partners in isolation. Courier configurations — including AWB sequences and credentials — are never shared between workspaces.
 
@@ -29,7 +29,7 @@ An **Air Waybill (AWB)** number is the primary reference document for air cargo 
   A **House AWB** is issued by the freight forwarder (you) to individual shippers and covers a specific shipment within the consolidated load. HAWBs are tracked at the **package level**. Each courier partner in Shiipp Warehouse can be configured with its own HAWB prefix and an auto-incrementing sequence number.
 </Accordion>
 
-AWB numbers follow a standard format: a **3-digit airline prefix** followed by a **8-digit serial number** (e.g., `106-12345678`). Shiipp Warehouse auto-increments the serial number each time a new AWB is generated for a courier, eliminating the risk of duplicate issuance.
+AWB numbers follow a standard format: a **3-digit airline prefix** followed by an **8-digit serial number** (e.g., `106-12345678`). Shiipp Warehouse auto-increments the serial number each time a new AWB is generated for a courier, eliminating the risk of duplicate issuance.
 
 ### Common AWB Prefixes
 
@@ -87,7 +87,7 @@ You can generate, view, and rotate API keys for each courier partner from **Sett
     Include the key in the `X-API-KEY` header of every API request made on behalf of this courier:
 
     ```http
-    GET /api/v1/packages HTTP/1.1
+    GET /api/packages HTTP/1.1
     Host: api.shiipp.com
     X-API-KEY: sk_courier_xxxxxxxxxxxxxxxxxxxx
     ```
@@ -100,3 +100,66 @@ You can generate, view, and rotate API keys for each courier partner from **Sett
 <Warning>
   It is strongly recommended to use **one API key per integration**. Avoid sharing a single key across multiple systems — this makes it impossible to isolate a breach and rotate credentials without disrupting unaffected integrations.
 </Warning>
+
+## Outbound Webhooks
+
+Shiipp Warehouse can push real-time event notifications to any HTTPS endpoint you configure for a courier partner. Webhook payloads are signed and encrypted with **AES-256** so that your receiving server can verify both the authenticity and integrity of every delivery.
+
+### Supported Events
+
+| Event | When It Fires |
+|-------|--------------|
+| `customer_sync` | A courier's customer record is created or updated in Shiipp Warehouse. |
+| `package_intake` | A new package is logged and assigned to the courier. |
+| `status_update` | A package's lifecycle status changes (e.g., from **In Transit** to **Arrived**). |
+
+### Payload Designer
+
+The webhook payload is fully customizable using the **drag-and-drop payload designer** in **Settings → Courier Partners → [Courier Name] → Webhooks**. You compose the JSON structure visually and insert dynamic values using template variables:
+
+| Variable | Value Inserted |
+|----------|---------------|
+| `{{package_id}}` | The internal unique identifier of the package |
+| `{{tracking}}` | The package's tracking number |
+| `{{weight_lbs}}` | Package weight in pounds |
+| `{{weight_kg}}` | Package weight in kilograms |
+| `{{status}}` | Current lifecycle status of the package |
+| `{{courier}}` | Display name of the assigned courier partner |
+| `{{customer_name}}` | The end recipient's name |
+
+A typical payload might look like this:
+
+```json
+{
+  "event": "status_update",
+  "package_id": "{{package_id}}",
+  "tracking": "{{tracking}}",
+  "customer": "{{customer_name}}",
+  "courier": "{{courier}}",
+  "weight": {
+    "lbs": "{{weight_lbs}}",
+    "kg": "{{weight_kg}}"
+  },
+  "status": "{{status}}"
+}
+```
+
+### Registering a Webhook Endpoint
+
+To register or update a webhook endpoint for a courier, use the API:
+
+```http
+POST /api/couriers/{id}/webhooks HTTP/1.1
+Host: api.shiipp.com
+X-API-KEY: sk_courier_xxxxxxxxxxxxxxxxxxxx
+Content-Type: application/json
+
+{
+  "url": "https://your-system.example.com/hooks/shiipp",
+  "events": ["package_intake", "status_update"]
+}
+```
+
+<Note>
+  Each registered endpoint receives a unique AES-256 signing secret. Validate the `X-Shiipp-Signature` header on every inbound request to confirm the payload was sent by Shiipp Warehouse and has not been tampered with in transit.
+</Note>
